@@ -1,46 +1,86 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton";
+"use client";
 
-const ROLE_LABEL: Record<string, string> = {
-  admin: "Admin",
-  guru: "Guru",
-  kepsek: "Kepala Sekolah",
-  kurikulum: "Kurikulum",
-  siswa: "Siswa",
-};
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export default async function DashboardLayout({
+const NAV_ITEMS = [
+  { label: "Dashboard", href: "/dashboard/admin" },
+  { label: "Manajemen Kelas", href: "/dashboard/admin/kelas" },
+  { label: "Manajemen Siswa", href: "/dashboard/admin/siswa" },
+  { label: "Guru & Wali Kelas", href: "/dashboard/admin/guru" },
+  { label: "Mata Pelajaran", href: "/dashboard/admin/mapel" },
+  { label: "Akun Kepsek & Kurikulum", href: "/dashboard/admin/akun" },
+];
+
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const pathname = usePathname();
 
-  if (!session) {
-    redirect("/login");
-  }
-
-  const role = session.user.role;
+  const isActive = (href: string) =>
+    href === "/dashboard/admin" ? pathname === href : pathname?.startsWith(href);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-6 py-4 border-b border-ink/10 bg-white">
-        <div>
-          <span className="font-display font-bold text-plum-700">
-            LMS Citra Negara
-          </span>
-          <span className="ml-3 text-xs uppercase tracking-wide bg-brand-100 text-brand-700 rounded-full px-2 py-1">
-            {ROLE_LABEL[role] ?? role}
-          </span>
+    <div className="min-h-screen bg-white">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 bg-navy-700 text-white flex-col">
+        <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
+          <div className="w-9 h-9 rounded-lg bg-navy-500 flex items-center justify-center font-display font-bold text-sm">
+            CN
+          </div>
+          <div>
+            <p className="text-sm font-semibold leading-tight">SMK Citra Negara</p>
+            <p className="text-xs text-white/50">Sistem LMS Sekolah</p>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-ink/70">{session.user.name}</span>
-          <LogoutButton />
+
+        <p className="px-5 pt-4 pb-1 text-[11px] font-medium text-white/40 uppercase tracking-wide">
+          Admin
+        </p>
+
+        <nav className="flex-1 px-3 mt-1 space-y-1 overflow-y-auto">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                isActive(item.href)
+                  ? "bg-navy-500 text-white"
+                  : "text-white/70 hover:bg-white/5"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="px-5 py-4 text-[11px] text-white/30 border-t border-white/10">
+          © 2026 SMK Citra Negara
+          <br />
+          v1.0 — Portal Admin
         </div>
-      </header>
-      <main className="flex-1 p-6 bg-brand-50">{children}</main>
+      </aside>
+
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10 z-40 overflow-x-auto shadow-sm">
+        <div className="flex gap-1 p-2 min-w-max">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
+                isActive(item.href)
+                  ? "bg-navy-500 text-white"
+                  : "text-ink/70 bg-navy-100"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="md:ml-64 p-6 pb-20 md:pb-6">{children}</div>
     </div>
   );
 }

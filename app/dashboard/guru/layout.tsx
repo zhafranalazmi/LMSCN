@@ -5,15 +5,12 @@ import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/dashboard/admin" },
-  { label: "Manajemen Kelas", href: "/dashboard/admin/kelas" },
-  { label: "Manajemen Siswa", href: "/dashboard/admin/siswa" },
-  { label: "Guru & Wali Kelas", href: "/dashboard/admin/guru" },
-  { label: "Mata Pelajaran", href: "/dashboard/admin/mapel" },
-  { label: "Akun Kepsek & Kurikulum", href: "/dashboard/admin/akun" },
+  { label: "Dashboard", href: "/dashboard/guru" },
+  { label: "Kelas Saya", href: "/dashboard/guru/kelas" },
+  { label: "Buat Tugas", href: "/dashboard/guru/tugas" },
 ];
 
-export default function AdminLayout({
+export default function GuruLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -21,7 +18,7 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   const isActive = (href: string) =>
-    href === "/dashboard/admin" ? pathname === href : pathname?.startsWith(href);
+    href === "/dashboard/guru" ? pathname === href : pathname?.startsWith(href);
 
   return (
     <div className="min-h-screen bg-white">
@@ -37,7 +34,7 @@ export default function AdminLayout({
         </div>
 
         <p className="px-5 pt-4 pb-1 text-[11px] font-medium text-white/40 uppercase tracking-wide">
-          Admin
+          Guru
         </p>
 
         <nav className="flex-1 px-3 mt-1 space-y-1 overflow-y-auto">
@@ -59,11 +56,10 @@ export default function AdminLayout({
         <div className="px-5 py-4 text-[11px] text-white/30 border-t border-white/10">
           © 2026 SMK Citra Negara
           <br />
-          v1.0 — Portal Admin
+          v1.0 — Portal Guru
         </div>
       </aside>
 
-      {/* Topbar: nempel atas, sejajar dengan area konten (setelah sidebar) */}
       <header className="hidden md:flex fixed top-0 left-64 right-0 h-16 bg-white border-b border-ink/10 items-center justify-between px-6 z-30">
         <div className="relative w-72">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
@@ -73,11 +69,8 @@ export default function AdminLayout({
             className="w-full rounded-lg border border-ink/15 pl-9 pr-3 py-2 text-sm outline-none focus:border-navy-500"
           />
         </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-navy-500 text-white flex items-center justify-center text-sm font-semibold">
-            AD
-          </div>
+        <div className="w-9 h-9 rounded-full bg-navy-500 text-white flex items-center justify-center text-sm font-semibold">
+          GR
         </div>
       </header>
 

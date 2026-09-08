@@ -3,7 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 
-const JURUSAN_LIST = ["PPLG", "MPLB", "PM", "TJKT", "DV", "Perhotelan"];
+const JURUSAN_LIST = ["PPLG", "MPLB", "PM", "TJKT", "DKV", "Perhotelan"];
 const TINGKAT_LIST = ["X", "XI", "XII"];
 
 interface Siswa {
@@ -38,14 +38,11 @@ export default function SiswaPage() {
   const [jurusan, setJurusan] = useState(JURUSAN_LIST[0]);
   const [kelas, setKelas] = useState("");
 
-  // Kelas mana yang lagi dipilih buat ditampilkan daftar siswanya
   const [activeKelasNama, setActiveKelasNama] = useState<string | null>(null);
-  // 3 dropdown berjenjang buat milih kelas yang mau dilihat
   const [viewTingkat, setViewTingkat] = useState("X");
   const [viewJurusan, setViewJurusan] = useState(JURUSAN_LIST[0]);
   const [viewNomor, setViewNomor] = useState("");
 
-  // Modal edit siswa
   const [editTarget, setEditTarget] = useState<Siswa | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
@@ -56,7 +53,6 @@ export default function SiswaPage() {
   const [editError, setEditError] = useState<string | null>(null);
   const [editSubmitting, setEditSubmitting] = useState(false);
 
-  // Cuma kelas yang tingkat & jurusannya cocok sama pilihan form di atas
   const filteredKelas = kelasList.filter(
     (k) => k.tingkat === tingkat && k.jurusan === jurusan
   );
@@ -79,7 +75,6 @@ export default function SiswaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update pilihan kelas di form setiap tingkat/jurusan berubah
   useEffect(() => {
     const match = kelasList.filter(
       (k) => k.tingkat === tingkat && k.jurusan === jurusan
@@ -88,15 +83,11 @@ export default function SiswaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tingkat, jurusan, kelasList]);
 
-  // Nomor kelas yang tersedia untuk kombinasi Tingkat+Jurusan yang dipilih,
-  // diambil dari kelas yang beneran ada (bukan di-hardcode 1-5)
   const viewNomorList = kelasList
     .filter((k) => k.tingkat === viewTingkat && k.jurusan === viewJurusan)
     .map((k) => k.nama.split(" ").pop() ?? "")
     .sort((a, b) => Number(a) - Number(b));
 
-  // Kalau ada ?kelas=... di URL (misal dari link "Lihat Siswa" di halaman
-  // Kelas), pecah jadi tingkat/jurusan/nomor dan set 3 dropdown-nya
   useEffect(() => {
     if (!kelasDariUrl || kelasList.length === 0) return;
     const match = kelasList.find((k) => k.nama === kelasDariUrl);
@@ -108,7 +99,6 @@ export default function SiswaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kelasDariUrl, kelasList]);
 
-  // Setiap Tingkat/Jurusan berubah, pastikan Nomor yang dipilih masih valid
   useEffect(() => {
     if (viewNomorList.length === 0) {
       setViewNomor("");
@@ -120,7 +110,6 @@ export default function SiswaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTingkat, viewJurusan, kelasList]);
 
-  // Nama kelas lengkap hasil gabungan 3 dropdown, ini yang dipakai buat filter siswa
   useEffect(() => {
     if (!viewNomor) {
       setActiveKelasNama(null);
@@ -129,8 +118,6 @@ export default function SiswaPage() {
     setActiveKelasNama(`${viewTingkat} ${viewJurusan} ${viewNomor}`);
   }, [viewTingkat, viewJurusan, viewNomor]);
 
-  // Kalau Tingkat/Jurusan di modal edit berubah, pastikan kelas yang dipilih
-  // masih valid untuk kombinasi baru itu
   useEffect(() => {
     if (!editTarget) return;
     const match = kelasList.filter(
@@ -174,7 +161,6 @@ export default function SiswaPage() {
     loadData();
   }
 
-  // Kelas yang cocok buat dropdown di modal edit
   const editFilteredKelas = kelasList.filter(
     (k) => k.tingkat === editTingkat && k.jurusan === editJurusan
   );
@@ -225,266 +211,294 @@ export default function SiswaPage() {
   const siswaDiKelasAktif = siswaList.filter((s) => s.kelas === activeKelasNama);
 
   return (
-    <div>
-      <h1 className="font-display text-2xl font-bold text-ink mb-1">
-        Manajemen Siswa
-      </h1>
-      <p className="text-ink/60 mb-6">Tambah dan kelola akun siswa.</p>
+    <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
+        <div className="max-w-3xl">
+          <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
+            ADMINISTRASI AKADEMIK
+          </span>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            Manajemen Siswa
+          </h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
+            Tambah dan kelola akun siswa berdasarkan kelas.
+          </p>
+        </div>
+      </section>
 
       {kelasList.length === 0 && !loading && (
-        <div className="mb-6 rounded-lg bg-brand-100 text-brand-700 text-sm px-4 py-3">
+        <div className="mb-6 rounded-2xl border border-[#3d6687]/10 bg-[#4b7899]/10 px-4 py-3 text-sm text-[#3d6687]">
           Belum ada kelas. Buat kelas dulu di halaman{" "}
-          <a href="/dashboard/admin/kelas" className="underline font-medium">
+          <a href="/dashboard/admin/kelas" className="font-semibold underline">
             Manajemen Kelas
           </a>{" "}
           sebelum menambah siswa.
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-xl border border-ink/10 p-5 mb-6 flex flex-wrap gap-3 items-end"
-      >
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">Nama</label>
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nama siswa"
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
+      {/* Form Tambah */}
+      <section className="mb-6 rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-5 flex flex-col gap-1">
+          <h2 className="text-base font-bold text-[#1d3345]">Tambah Siswa Baru</h2>
+          <p className="text-sm text-[#1d3345]/55">
+            Isi data siswa dan pilih kelas tujuan.
+          </p>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">Email</label>
-          <input
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="siswa@citranegara.sch.id"
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-4">
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Nama
+            </label>
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nama siswa"
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            />
+          </div>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">
-            Password Awal
-          </label>
-          <input
-            required
-            type="text"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="password123"
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
-        </div>
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Email
+            </label>
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="siswa@citranegara.sch.id"
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            />
+          </div>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">
-            Tingkat
-          </label>
-          <select
-            value={tingkat}
-            onChange={(e) => setTingkat(e.target.value)}
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Password Awal
+            </label>
+            <input
+              required
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="password123"
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Tingkat
+            </label>
+            <select
+              value={tingkat}
+              onChange={(e) => setTingkat(e.target.value)}
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            >
+              {TINGKAT_LIST.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Jurusan
+            </label>
+            <select
+              value={jurusan}
+              onChange={(e) => setJurusan(e.target.value)}
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            >
+              {JURUSAN_LIST.map((j) => (
+                <option key={j} value={j}>{j}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+              Kelas
+            </label>
+            <select
+              required
+              value={kelas}
+              onChange={(e) => setKelas(e.target.value)}
+              disabled={filteredKelas.length === 0}
+              className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+            >
+              {filteredKelas.length === 0 && (
+                <option value="">Belum ada kelas {tingkat} {jurusan}</option>
+              )}
+              {filteredKelas.map((k) => (
+                <option key={k._id} value={k.nama}>{k.nama}</option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting || filteredKelas.length === 0}
+            className="rounded-xl bg-[#3d6687] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#2f5573] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {TINGKAT_LIST.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
+            {submitting ? "Menambah..." : "+ Tambah Siswa"}
+          </button>
+        </form>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">
-            Jurusan
-          </label>
-          <select
-            value={jurusan}
-            onChange={(e) => setJurusan(e.target.value)}
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          >
-            {JURUSAN_LIST.map((j) => (
-              <option key={j} value={j}>
-                {j}
-              </option>
-            ))}
-          </select>
-        </div>
+        {error && (
+          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+      </section>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">Kelas</label>
-          <select
-            required
-            value={kelas}
-            onChange={(e) => setKelas(e.target.value)}
-            disabled={filteredKelas.length === 0}
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          >
-            {filteredKelas.length === 0 && (
-              <option value="">Belum ada kelas {tingkat} {jurusan}</option>
-            )}
-            {filteredKelas.map((k) => (
-              <option key={k._id} value={k.nama}>
-                {k.nama}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting || filteredKelas.length === 0}
-          className="rounded-full bg-brand-500 text-white px-5 py-2 text-sm font-medium hover:bg-brand-600 transition-colors disabled:opacity-60"
-        >
-          {submitting ? "Menambah..." : "Tambah Siswa"}
-        </button>
-
-        {error && <p className="text-sm text-red-600 w-full">{error}</p>}
-      </form>
-
+      {/* Loading / Empty */}
       {loading && (
-        <div className="bg-white rounded-xl border border-ink/10 px-4 py-6 text-center text-ink/50 text-sm">
-          Memuat...
+        <div className="rounded-[24px] border border-[#3d6687]/10 bg-white px-6 py-14 text-center shadow-sm">
+          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-[#4b7899]/20 border-t-[#4b7899]" />
+          <p className="text-sm font-medium text-[#1d3345]/50">Memuat data...</p>
         </div>
       )}
 
       {!loading && kelasList.length === 0 && (
-        <div className="bg-white rounded-xl border border-ink/10 px-4 py-6 text-center text-ink/50 text-sm">
-          Belum ada kelas untuk ditampilkan.
+        <div className="rounded-[24px] border border-dashed border-[#3d6687]/20 bg-white px-6 py-16 text-center">
+          <p className="text-sm font-medium text-[#1d3345]/50">
+            Belum ada kelas untuk ditampilkan.
+          </p>
         </div>
       )}
 
       {!loading && kelasList.length > 0 && (
-        <>
-          {/* 3 dropdown berjenjang buat pilih kelas yang mau dilihat */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            <div>
-              <label className="block text-xs font-medium text-ink/70 mb-1">
-                Tingkat
-              </label>
+        <section className="space-y-5">
+          {/* Filter 3 dropdown berjenjang */}
+          <div className="rounded-[24px] border border-[#3d6687]/10 bg-white p-4 shadow-sm sm:p-5">
+            <div className="mb-3">
+              <h2 className="font-bold text-[#1d3345]">Lihat Siswa per Kelas</h2>
+              <p className="text-xs text-[#1d3345]/50">Pilih tingkat, jurusan, dan nomor kelas.</p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
               <select
                 value={viewTingkat}
                 onChange={(e) => setViewTingkat(e.target.value)}
-                className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500 bg-white"
+                className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
               >
                 {TINGKAT_LIST.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
+                  <option key={t} value={t}>{t}</option>
                 ))}
               </select>
-            </div>
 
-            <div>
-              <label className="block text-xs font-medium text-ink/70 mb-1">
-                Jurusan
-              </label>
               <select
                 value={viewJurusan}
                 onChange={(e) => setViewJurusan(e.target.value)}
-                className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500 bg-white"
+                className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
               >
                 {JURUSAN_LIST.map((j) => (
-                  <option key={j} value={j}>
-                    {j}
-                  </option>
+                  <option key={j} value={j}>{j}</option>
                 ))}
               </select>
-            </div>
 
-            <div>
-              <label className="block text-xs font-medium text-ink/70 mb-1">
-                Kelas ke-
-              </label>
               <select
                 value={viewNomor}
                 onChange={(e) => setViewNomor(e.target.value)}
                 disabled={viewNomorList.length === 0}
-                className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500 bg-white"
+                className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
               >
                 {viewNomorList.length === 0 && <option value="">-</option>}
                 {viewNomorList.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
+                  <option key={n} value={n}>{n}</option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-ink/10 overflow-hidden">
-            <div className="px-4 py-3 bg-brand-50 border-b border-ink/10">
-              <h2 className="font-semibold text-plum-700 text-sm">
-                Siswa {activeKelasNama}
-              </h2>
+          {/* Table */}
+          <div className="overflow-hidden rounded-[24px] border border-[#3d6687]/10 bg-white shadow-sm">
+            <div className="flex flex-col gap-3 border-b border-[#3d6687]/10 bg-gradient-to-r from-[#3d6687]/[0.07] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Daftar Siswa</p>
+                <h2 className="mt-1 text-lg font-bold text-[#1d3345]">{activeKelasNama ?? "-"}</h2>
+              </div>
+              <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
+                {siswaDiKelasAktif.length} Siswa
+              </span>
             </div>
-            <table className="w-full text-sm">
-              <thead className="text-left text-ink/60">
-                <tr>
-                  <th className="px-4 py-2 font-medium">Nama</th>
-                  <th className="px-4 py-2 font-medium">Email</th>
-                  <th className="px-4 py-2 font-medium text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {siswaDiKelasAktif.length === 0 && (
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead className="bg-[#c3c4c0]/20 text-left text-xs uppercase tracking-wider text-[#1d3345]/55">
                   <tr>
-                    <td colSpan={3} className="px-4 py-6 text-center text-ink/50">
-                      Belum ada siswa di kelas ini.
-                    </td>
+                    <th className="px-6 py-4 font-bold">Nama</th>
+                    <th className="px-6 py-4 font-bold">Email</th>
+                    <th className="px-6 py-4 text-right font-bold">Aksi</th>
                   </tr>
-                )}
-                {siswaDiKelasAktif.map((s) => (
-                  <tr key={s._id} className="border-t border-ink/5">
-                    <td className="px-4 py-3">{s.name}</td>
-                    <td className="px-4 py-3">{s.email}</td>
-                    <td className="px-4 py-3 text-right space-x-3">
-                      <button
-                        onClick={() => openEdit(s)}
-                        className="text-brand-600 hover:underline text-xs font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(s._id)}
-                        className="text-red-600 hover:underline text-xs font-medium"
-                      >
-                        Hapus
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {siswaDiKelasAktif.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-10 text-center text-[#1d3345]/50">
+                        Belum ada siswa di kelas ini.
+                      </td>
+                    </tr>
+                  )}
+                  {siswaDiKelasAktif.map((s) => (
+                    <tr
+                      key={s._id}
+                      className="border-t border-[#3d6687]/[0.08] transition hover:bg-[#4b7899]/[0.035]"
+                    >
+                      <td className="px-6 py-4 font-semibold text-[#1d3345]">{s.name}</td>
+                      <td className="px-6 py-4 text-[#1d3345]/60">{s.email}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => openEdit(s)}
+                            className="rounded-lg border border-[#3d6687]/15 px-3 py-2 text-xs font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(s._id)}
+                            className="rounded-lg border border-red-200 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </>
+        </section>
       )}
 
-      {/* Modal Edit Siswa */}
+      {/* Modal Edit */}
       {editTarget && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm max-h-[85vh] overflow-y-auto">
-            <h3 className="font-semibold text-plum-700 mb-4">Edit Siswa</h3>
-            <form onSubmit={handleEditSubmit} className="space-y-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d3345]/55 px-4 py-6 backdrop-blur-sm">
+          <div className="flex max-h-[85vh] w-full max-w-md flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
+            <div className="bg-gradient-to-r from-[#3d6687] to-[#4b7899] px-6 py-5 text-white">
+              <p className="text-xs font-bold uppercase tracking-wider text-white/60">Data Siswa</p>
+              <h3 className="mt-1 text-xl font-bold">Edit Siswa</h3>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-4 overflow-y-auto p-6">
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Nama
                 </label>
                 <input
                   required
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Email
                 </label>
                 <input
@@ -492,12 +506,12 @@ export default function SiswaPage() {
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Password Baru (opsional)
                 </label>
                 <input
@@ -505,46 +519,44 @@ export default function SiswaPage() {
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
                   placeholder="Kosongkan kalau gak diubah"
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
-                  Tingkat
-                </label>
-                <select
-                  value={editTingkat}
-                  onChange={(e) => setEditTingkat(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-                >
-                  {TINGKAT_LIST.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                    Tingkat
+                  </label>
+                  <select
+                    value={editTingkat}
+                    onChange={(e) => setEditTingkat(e.target.value)}
+                    className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+                  >
+                    {TINGKAT_LIST.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                    Jurusan
+                  </label>
+                  <select
+                    value={editJurusan}
+                    onChange={(e) => setEditJurusan(e.target.value)}
+                    className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+                  >
+                    {JURUSAN_LIST.map((j) => (
+                      <option key={j} value={j}>{j}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
-                  Jurusan
-                </label>
-                <select
-                  value={editJurusan}
-                  onChange={(e) => setEditJurusan(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-                >
-                  {JURUSAN_LIST.map((j) => (
-                    <option key={j} value={j}>
-                      {j}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Kelas
                 </label>
                 <select
@@ -552,35 +564,35 @@ export default function SiswaPage() {
                   value={editKelas}
                   onChange={(e) => setEditKelas(e.target.value)}
                   disabled={editFilteredKelas.length === 0}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 >
                   {editFilteredKelas.length === 0 && (
-                    <option value="">
-                      Belum ada kelas {editTingkat} {editJurusan}
-                    </option>
+                    <option value="">Belum ada kelas {editTingkat} {editJurusan}</option>
                   )}
                   {editFilteredKelas.map((k) => (
-                    <option key={k._id} value={k.nama}>
-                      {k.nama}
-                    </option>
+                    <option key={k._id} value={k.nama}>{k.nama}</option>
                   ))}
                 </select>
               </div>
 
-              {editError && <p className="text-sm text-red-600">{editError}</p>}
+              {editError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {editError}
+                </div>
+              )}
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setEditTarget(null)}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-ink/60 hover:bg-ink/5"
+                  className="rounded-xl px-5 py-3 text-sm font-bold text-[#1d3345]/60 transition hover:bg-[#1d3345]/5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={editSubmitting || editFilteredKelas.length === 0}
-                  className="rounded-full bg-brand-500 text-white px-4 py-2 text-sm font-medium hover:bg-brand-600 disabled:opacity-60"
+                  className="rounded-xl bg-[#3d6687] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#2f5573] disabled:opacity-60"
                 >
                   {editSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
@@ -589,6 +601,6 @@ export default function SiswaPage() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

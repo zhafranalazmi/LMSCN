@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
   html {
     font-family: theme("fontFamily.body");
@@ -10,10 +9,10 @@
     font-family: theme("fontFamily.display");
   }
   body {
-    @apply bg-brand-50 text-ink;
+    @apply bg-white text-ink;
   }
   :focus-visible {
-    outline: 2px solid theme("colors.plum.500");
+    outline: 2px solid theme("colors.navy.500");
     outline-offset: 2px;
   }
 }

@@ -15,9 +15,9 @@ export default function KepsekDashboard() {
         {menu.map((item) => (
           <div
             key={item.title}
-            className="bg-white rounded-xl border border-ink/10 p-5 hover:border-brand-300 transition-colors"
+            className="bg-navy-100 rounded-xl border border-ink/10 p-5 hover:border-navy-300 transition-colors"
           >
-            <h2 className="font-semibold text-plum-700 mb-1">{item.title}</h2>
+            <h2 className="font-semibold text-navy-700 mb-1">{item.title}</h2>
             <p className="text-sm text-ink/60">{item.desc}</p>
           </div>
         ))}

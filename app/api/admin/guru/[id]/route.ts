@@ -15,7 +15,7 @@ export async function PUT(
   }
 
   const body = await req.json();
-  const { name, email, password, mapel, walasKelas } = body;
+  const { name, email, password, mapel, kelasDiampu } = body;
 
   if (!name || !email) {
     return NextResponse.json(
@@ -37,24 +37,11 @@ export async function PUT(
     );
   }
 
-  if (walasKelas) {
-    const duplikatWalas = await Guru.findOne({
-      walasKelas,
-      _id: { $ne: params.id },
-    });
-    if (duplikatWalas) {
-      return NextResponse.json(
-        { message: `Kelas ${walasKelas} sudah punya wali kelas` },
-        { status: 400 }
-      );
-    }
-  }
-
   const update: any = {
     name,
     email: email.toLowerCase(),
     mapel: Array.isArray(mapel) ? mapel : [],
-    walasKelas: walasKelas || null,
+    kelasDiampu: Array.isArray(kelasDiampu) ? kelasDiampu : [],
   };
 
   if (password) {

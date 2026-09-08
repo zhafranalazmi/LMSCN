@@ -127,16 +127,24 @@ export default function AkunPage() {
   }
 
   return (
-    <div>
-      <h1 className="font-display text-2xl font-bold text-ink mb-1">
-        Akun Kepala Sekolah & Kurikulum
-      </h1>
-      <p className="text-ink/60 mb-6">
-        Kelola akun untuk role Kepala Sekolah dan Kurikulum.
-      </p>
+    <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
+        <div className="max-w-3xl">
+          <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
+            ADMINISTRASI AKUN
+          </span>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            Akun Kepala Sekolah & Kurikulum
+          </h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
+            Kelola akun untuk role Kepala Sekolah dan Kurikulum.
+          </p>
+        </div>
+      </section>
 
       {/* Tab pilih role */}
-      <div className="flex gap-2 mb-6">
+      <div className="mb-6 flex gap-2">
         {(["kepsek", "kurikulum"] as Role[]).map((role) => (
           <button
             key={role}
@@ -144,10 +152,10 @@ export default function AkunPage() {
               setActiveRole(role);
               resetForm();
             }}
-            className={`rounded-full px-5 py-2 text-sm font-medium border transition-colors ${
+            className={`rounded-xl border px-5 py-2.5 text-sm font-bold transition-all ${
               activeRole === role
-                ? "bg-plum-700 text-white border-plum-700"
-                : "bg-white text-ink/70 border-ink/15 hover:border-plum-300"
+                ? "border-[#3d6687] bg-[#3d6687] text-white shadow-sm"
+                : "border-[#3d6687]/10 bg-white text-[#1d3345]/65 hover:border-[#4b7899]/40 hover:bg-[#4b7899]/10 hover:text-[#3d6687]"
             }`}
           >
             {ROLE_LABEL[role]}
@@ -155,127 +163,174 @@ export default function AkunPage() {
         ))}
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-xl border border-ink/10 p-5 mb-6 flex flex-wrap gap-3 items-end"
-      >
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">Nama</label>
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={`Nama ${ROLE_LABEL[activeRole]}`}
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
+      {/* Form Tambah */}
+      <section className="mb-6 rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-5 flex flex-col gap-1">
+          <h2 className="text-base font-bold text-[#1d3345]">
+            Tambah Akun {ROLE_LABEL[activeRole]}
+          </h2>
+          <p className="text-sm text-[#1d3345]/55">
+            Isi data untuk membuat akun {ROLE_LABEL[activeRole]} baru.
+          </p>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">Email</label>
-          <input
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="nama@citranegara.sch.id"
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:flex-row lg:items-end">
+          <div className="grid flex-1 gap-4 sm:grid-cols-3">
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                Nama
+              </label>
+              <input
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={`Nama ${ROLE_LABEL[activeRole]}`}
+                className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                Email
+              </label>
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="nama@citranegara.sch.id"
+                className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                Password Awal
+              </label>
+              <input
+                required
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="password123"
+                className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="rounded-xl bg-[#3d6687] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#2f5573] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? "Menambah..." : `+ Tambah ${ROLE_LABEL[activeRole]}`}
+          </button>
+        </form>
+
+        {error && (
+          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+      </section>
+
+      {/* Table */}
+      <section className="overflow-hidden rounded-[24px] border border-[#3d6687]/10 bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-[#3d6687]/10 bg-gradient-to-r from-[#3d6687]/[0.07] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Daftar Aktif</p>
+            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">{ROLE_LABEL[activeRole]}</h2>
+          </div>
+          <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
+            {currentList.length} Akun
+          </span>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-ink/70 mb-1">
-            Password Awal
-          </label>
-          <input
-            required
-            type="text"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="password123"
-            className="rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-full bg-brand-500 text-white px-5 py-2 text-sm font-medium hover:bg-brand-600 transition-colors disabled:opacity-60"
-        >
-          {submitting ? "Menambah..." : `Tambah ${ROLE_LABEL[activeRole]}`}
-        </button>
-
-        {error && <p className="text-sm text-red-600 w-full">{error}</p>}
-      </form>
-
-      <div className="bg-white rounded-xl border border-ink/10 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-brand-50 text-left text-ink/60">
-            <tr>
-              <th className="px-4 py-3 font-medium">Nama</th>
-              <th className="px-4 py-3 font-medium">Email</th>
-              <th className="px-4 py-3 font-medium text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[480px] text-sm">
+            <thead className="bg-[#c3c4c0]/20 text-left text-xs uppercase tracking-wider text-[#1d3345]/55">
               <tr>
-                <td colSpan={3} className="px-4 py-6 text-center text-ink/50">
-                  Memuat...
-                </td>
+                <th className="px-6 py-4 font-bold">Nama</th>
+                <th className="px-6 py-4 font-bold">Email</th>
+                <th className="px-6 py-4 text-right font-bold">Aksi</th>
               </tr>
-            )}
-            {!loading && currentList.length === 0 && (
-              <tr>
-                <td colSpan={3} className="px-4 py-6 text-center text-ink/50">
-                  Belum ada akun {ROLE_LABEL[activeRole]}.
-                </td>
-              </tr>
-            )}
-            {currentList.map((a) => (
-              <tr key={a._id} className="border-t border-ink/5">
-                <td className="px-4 py-3">{a.name}</td>
-                <td className="px-4 py-3">{a.email}</td>
-                <td className="px-4 py-3 text-right space-x-3">
-                  <button
-                    onClick={() => openEdit(a)}
-                    className="text-brand-600 hover:underline text-xs font-medium"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(a._id)}
-                    className="text-red-600 hover:underline text-xs font-medium"
-                  >
-                    Hapus
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {loading && (
+                <tr>
+                  <td colSpan={3} className="px-6 py-10 text-center text-[#1d3345]/50">
+                    Memuat...
+                  </td>
+                </tr>
+              )}
+              {!loading && currentList.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="px-6 py-10 text-center text-[#1d3345]/50">
+                    Belum ada akun {ROLE_LABEL[activeRole]}.
+                  </td>
+                </tr>
+              )}
+              {currentList.map((a, index) => (
+                <tr
+                  key={a._id}
+                  className="border-t border-[#3d6687]/[0.08] transition hover:bg-[#4b7899]/[0.035]"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4b7899]/10 text-[10px] font-black text-[#3d6687]">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-semibold text-[#1d3345]">{a.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-[#1d3345]/60">{a.email}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => openEdit(a)}
+                        className="rounded-lg border border-[#3d6687]/15 px-3 py-2 text-xs font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(a._id)}
+                        className="rounded-lg border border-red-200 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
+      {/* Modal Edit */}
       {editTarget && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm">
-            <h3 className="font-semibold text-plum-700 mb-4">
-              Edit {ROLE_LABEL[activeRole]}
-            </h3>
-            <form onSubmit={handleEditSubmit} className="space-y-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d3345]/55 px-4 py-6 backdrop-blur-sm">
+          <div className="w-full max-w-sm overflow-hidden rounded-[28px] bg-white shadow-2xl">
+            <div className="bg-gradient-to-r from-[#3d6687] to-[#4b7899] px-6 py-5 text-white">
+              <p className="text-xs font-bold uppercase tracking-wider text-white/60">Data Akun</p>
+              <h3 className="mt-1 text-xl font-bold">Edit {ROLE_LABEL[activeRole]}</h3>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-4 p-6">
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Nama
                 </label>
                 <input
                   required
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Email
                 </label>
                 <input
@@ -283,12 +338,12 @@ export default function AkunPage() {
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-ink/70 mb-1">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
                   Password Baru (opsional)
                 </label>
                 <input
@@ -296,24 +351,28 @@ export default function AkunPage() {
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
                   placeholder="Kosongkan kalau gak diubah"
-                  className="w-full rounded-lg border border-ink/15 px-3 py-2 text-sm outline-none focus:border-plum-500"
+                  className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
 
-              {editError && <p className="text-sm text-red-600">{editError}</p>}
+              {editError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {editError}
+                </div>
+              )}
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setEditTarget(null)}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-ink/60 hover:bg-ink/5"
+                  className="rounded-xl px-5 py-3 text-sm font-bold text-[#1d3345]/60 transition hover:bg-[#1d3345]/5"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={editSubmitting}
-                  className="rounded-full bg-brand-500 text-white px-4 py-2 text-sm font-medium hover:bg-brand-600 disabled:opacity-60"
+                  className="rounded-xl bg-[#3d6687] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#2f5573] disabled:opacity-60"
                 >
                   {editSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
@@ -322,6 +381,6 @@ export default function AkunPage() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

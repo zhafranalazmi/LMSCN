@@ -7,9 +7,8 @@ const GuruSchema = new Schema(
     password: { type: String, required: true },
     // Daftar nama mapel yang diajar, bisa lebih dari satu
     mapel: { type: [String], default: [] },
-    // Nama kelas yang diwalikan, kosong/null kalau bukan wali kelas.
-    // 1 guru maksimal jadi walas 1 kelas.
-    walasKelas: { type: String, default: null },
+    // Daftar nama kelas yang diampu (di-assign oleh admin), bisa lebih dari satu
+    kelasDiampu: { type: [String], default: [] },
   },
   { timestamps: true }
 );

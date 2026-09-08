@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { name, email, password, mapel, walasKelas } = body;
+  const { name, email, password, mapel, kelasDiampu } = body;
 
   if (!name || !email || !password) {
     return NextResponse.json(
@@ -39,17 +39,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Email sudah dipakai" }, { status: 400 });
   }
 
-  // Kalau mau dijadiin wali kelas, pastiin kelas itu belum punya walas lain
-  if (walasKelas) {
-    const existingWalas = await Guru.findOne({ walasKelas });
-    if (existingWalas) {
-      return NextResponse.json(
-        { message: `Kelas ${walasKelas} sudah punya wali kelas` },
-        { status: 400 }
-      );
-    }
-  }
-
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const guru = await Guru.create({
@@ -57,7 +46,7 @@ export async function POST(req: Request) {
     email: email.toLowerCase(),
     password: hashedPassword,
     mapel: Array.isArray(mapel) ? mapel : [],
-    walasKelas: walasKelas || null,
+    kelasDiampu: Array.isArray(kelasDiampu) ? kelasDiampu : [],
   });
 
   const { password: _pw, ...guruWithoutPassword } = guru.toObject();
