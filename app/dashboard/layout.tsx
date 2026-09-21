@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "Guru & Wali Kelas", href: "/dashboard/admin/guru" },
   { label: "Mata Pelajaran", href: "/dashboard/admin/mapel" },
   { label: "Akun Kepsek & Kurikulum", href: "/dashboard/admin/akun" },
+  { label: "Logout", href: "/login" },
 ];
 
 export default function AdminLayout({

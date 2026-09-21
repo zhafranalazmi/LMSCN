@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 // ==== ISI DATA ADMIN DI SINI ====
-const NAME = "Nama Admin";
+const NAME = "Admin";
 const EMAIL = "admin@gmail.com";
 const PASSWORD = "123";
 // =================================

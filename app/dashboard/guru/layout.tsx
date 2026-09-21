@@ -8,6 +8,9 @@ const NAV_ITEMS = [
   { label: "Dashboard", href: "/dashboard/guru" },
   { label: "Kelas Saya", href: "/dashboard/guru/kelas" },
   { label: "Buat Tugas", href: "/dashboard/guru/tugas" },
+  { label: "Upload Materi", href: "/dashboard/guru/materi" },
+  { label: "Asesmen", href: "/dashboard/guru/asesmen" },
+  { label: "Logout", href: "/login" },
 ];
 
 export default function GuruLayout({
