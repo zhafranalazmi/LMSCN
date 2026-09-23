@@ -3,17 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
-
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/dashboard/guru" },
-  { label: "Kelas Saya", href: "/dashboard/guru/kelas" },
-  { label: "Buat Tugas", href: "/dashboard/guru/tugas" },
-  { label: "Upload Materi", href: "/dashboard/guru/materi" },
-  { label: "Asesmen", href: "/dashboard/guru/asesmen" },
-  { label: "Generate Nilai", href: "/dashboard/guru/nilai" },
+  { label: "Dashboard", href: "/dashboard/siswa" },
+  { label: "Tugas", href: "/dashboard/siswa/tugas" },
+  { label: "Materi", href: "/dashboard/siswa/materi" },
+  { label: "Asesmen", href: "/dashboard/siswa/asesmen" },
   { label: "Log Out", href: "/login" },
 ];
-export default function GuruLayout({
+
+export default function SiswaLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -21,7 +19,7 @@ export default function GuruLayout({
   const pathname = usePathname();
 
   const isActive = (href: string) =>
-    href === "/dashboard/guru" ? pathname === href : pathname?.startsWith(href);
+    href === "/dashboard/siswa" ? pathname === href : pathname?.startsWith(href);
 
   return (
     <div className="min-h-screen bg-white">
@@ -37,7 +35,7 @@ export default function GuruLayout({
         </div>
 
         <p className="px-5 pt-4 pb-1 text-[11px] font-medium text-white/40 uppercase tracking-wide">
-          Guru
+          Siswa
         </p>
 
         <nav className="flex-1 px-3 mt-1 space-y-1 overflow-y-auto">
@@ -59,7 +57,7 @@ export default function GuruLayout({
         <div className="px-5 py-4 text-[11px] text-white/30 border-t border-white/10">
           © 2026 SMK Citra Negara
           <br />
-          v1.0 — Portal Guru
+          v1.0 — Portal Siswa
         </div>
       </aside>
 
@@ -73,7 +71,7 @@ export default function GuruLayout({
           />
         </div>
         <div className="w-9 h-9 rounded-full bg-navy-500 text-white flex items-center justify-center text-sm font-semibold">
-          GR
+          SW
         </div>
       </header>
 
