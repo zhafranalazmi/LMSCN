@@ -36,11 +36,18 @@ export default function LoginPage() {
     router.push(`/dashboard/${role}`);
   }
 
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-white px-4">
+    return (
+    <main className="relative min-h-screen flex items-center justify-center px-4">
+      {/* Background */}
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/bg.jpg')" }}
+      />
+      <div className="absolute inset-0 -z-10 bg-navy-900/50" />
+
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-navy-100 rounded-2xl shadow-sm border border-navy-300 p-8"
+        className="w-full max-w-sm bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-white/40 p-8"
       >
         <h1 className="font-display text-2xl font-bold text-navy-700 mb-1">
           Masuk
@@ -62,7 +69,7 @@ export default function LoginPage() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 px-3 py-2 mb-4 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-4 outline-none focus:border-navy-500"
           placeholder="nama@citranegara.sch.id"
         />
 
@@ -75,7 +82,7 @@ export default function LoginPage() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 px-3 py-2 mb-6 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-6 outline-none focus:border-navy-500"
           placeholder="••••••••"
         />
 
