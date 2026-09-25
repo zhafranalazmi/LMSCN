@@ -7,7 +7,7 @@ export default function GuruDashboard() {
     { title: "Upload Materi", desc: "Unggah materi pembelajaran", icon: "📚", href: "/dashboard/guru/materi" },
     { title: "Asesmen", desc: "Buat kuis/ujian online & beri penilaian", icon: "🧪", href: "/dashboard/guru/asesmen" },
    { title: "Generate Nilai", desc: "Rekap nilai per mapel/kelas", icon: "📊", href: "/dashboard/guru/nilai" },
-   { title: "Log Out", desc: "Keluar dari akun guru", icon: "🚪", href: "/login" },
+  
   ];
 
   return (

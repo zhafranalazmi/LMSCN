@@ -350,12 +350,12 @@ export default function MateriPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <a>
+                  <a
                     href={m.lampiranUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-lg border border-[#3d6687]/15 px-3 py-2 text-xs font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
-                  
+                  >
                     {m.tipeLampiran === "pdf" ? "Lihat PDF" : "Buka Link"}
                   </a>
                   <button

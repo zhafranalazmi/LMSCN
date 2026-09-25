@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import Link from "next/link";
 
 interface Tugas {
   _id: string;
@@ -303,7 +304,7 @@ export default function TugasPage() {
             </button>
 
             {error && (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                 {error}
               </div>
             )}
@@ -367,14 +368,24 @@ export default function TugasPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <a
-                    href={t.lampiranUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/dashboard/guru/tugas/${t._id}`}
                     className="rounded-lg border border-[#3d6687]/15 px-3 py-2 text-xs font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
                   >
-                    {t.tipeLampiran === "pdf" ? "Lihat PDF" : "Buka Link"}
-                  </a>
+                    Lihat Pengumpulan
+                  </Link>
+
+                  {t.lampiranUrl && (
+                    <a
+                      href={t.lampiranUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg border border-[#3d6687]/15 px-3 py-2 text-xs font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
+                    >
+                      {t.tipeLampiran === "pdf" ? "Lihat PDF" : "Buka Link"}
+                    </a>
+                  )}
+
                   <button
                     onClick={() => handleDelete(t._id)}
                     className="rounded-lg border border-red-200 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
