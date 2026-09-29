@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search } from "lucide-react";
+import { BookOpen, ClipboardCheck, ClipboardList, LayoutDashboard } from "lucide-react";
+import MobileNav from "@/components/shared/MobileNav";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/dashboard/siswa" },
-  { label: "Tugas", href: "/dashboard/siswa/tugas" },
-  { label: "Materi", href: "/dashboard/siswa/materi" },
-  { label: "Asesmen", href: "/dashboard/siswa/asesmen" },
+  { label: "Dashboard", href: "/dashboard/siswa", icon: LayoutDashboard },
+  { label: "Tugas", href: "/dashboard/siswa/tugas", icon: ClipboardList },
+  { label: "Materi", href: "/dashboard/siswa/materi", short: "Materi", icon: BookOpen },
+  { label: "Asesmen", href: "/dashboard/siswa/asesmen", icon: ClipboardCheck },
   { label: "Log Out", href: "/login" },
 ];
 
@@ -22,7 +24,7 @@ export default function SiswaLayout({
     href === "/dashboard/siswa" ? pathname === href : pathname?.startsWith(href);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="dash min-h-screen bg-white max-md:bg-gradient-to-b max-md:from-navy-100 max-md:to-[#f5f6f6]">
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 bg-navy-700 text-white flex-col">
         <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
           <div className="w-9 h-9 rounded-lg bg-navy-500 flex items-center justify-center font-display font-bold text-sm">
@@ -61,39 +63,18 @@ export default function SiswaLayout({
         </div>
       </aside>
 
-      <header className="hidden md:flex fixed top-0 left-64 right-0 h-16 bg-white border-b border-ink/10 items-center justify-between px-6 z-30">
-        <div className="relative w-72">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
-          <input
-            type="text"
-            placeholder="Cari..."
-            className="w-full rounded-lg border border-ink/15 pl-9 pr-3 py-2 text-sm outline-none focus:border-navy-500"
-          />
-        </div>
-        <div className="w-9 h-9 rounded-full bg-navy-500 text-white flex items-center justify-center text-sm font-semibold">
+      <header className="hidden md:flex fixed top-0 left-64 right-0 h-16 bg-white border-b border-ink/10 items-center justify-end px-6 z-30">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <div className="w-9 h-9 rounded-full bg-navy-500 text-white flex items-center justify-center text-sm font-semibold">
           SW
+        </div>
         </div>
       </header>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-ink/10 z-40 overflow-x-auto shadow-sm">
-        <div className="flex gap-1 p-2 min-w-max">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
-                isActive(item.href)
-                  ? "bg-navy-500 text-white"
-                  : "text-ink/70 bg-navy-100"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <MobileNav items={NAV_ITEMS} roleLabel="Siswa" initials="SW" />
 
-      <div className="md:ml-64 md:pt-16 p-6 pb-20 md:pb-6">{children}</div>
+      <div className="md:ml-64 md:pt-16 px-3 pt-1 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:p-6 md:pb-6">{children}</div>
     </div>
   );
 }

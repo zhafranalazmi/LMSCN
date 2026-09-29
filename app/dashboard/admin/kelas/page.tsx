@@ -357,7 +357,7 @@ export default function KelasPage() {
 
       {/* Modal Edit */}
       {editTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d3345]/55 px-4 py-6 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1d3345]/55 backdrop-blur-sm sm:items-center sm:px-4 sm:py-6">
           <div className="w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-2xl">
             <div className="bg-gradient-to-r from-[#3d6687] to-[#4b7899] px-6 py-5 text-white">
               <p className="text-xs font-bold uppercase tracking-wider text-white/60">Pengaturan Kelas</p>
@@ -438,8 +438,8 @@ export default function KelasPage() {
 
       {/* Modal Siswa */}
       {viewTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d3345]/55 px-4 py-6 backdrop-blur-sm">
-          <div className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1d3345]/55 backdrop-blur-sm sm:items-center sm:px-4 sm:py-6">
+          <div className="sheet-panel flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-b-none rounded-t-[28px] bg-white pb-[env(safe-area-inset-bottom)] shadow-2xl sm:max-h-[85vh] sm:rounded-[28px] sm:pb-0">
             <div className="flex items-start justify-between bg-gradient-to-r from-[#3d6687] to-[#4b7899] px-6 py-5 text-white">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-white/60">Data Peserta Didik</p>
@@ -474,7 +474,7 @@ export default function KelasPage() {
               )}
 
               {!siswaLoading && siswaDiKelas.length > 0 && (
-                <div className="overflow-hidden rounded-2xl border border-[#3d6687]/10">
+                <div className="overflow-x-auto rounded-2xl border border-[#3d6687]/10">
                   <table className="w-full text-sm">
                     <thead className="bg-[#c3c4c0]/20 text-left text-xs uppercase tracking-wider text-[#1d3345]/55">
                       <tr>

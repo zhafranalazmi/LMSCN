@@ -16,3 +16,140 @@
     outline-offset: 2px;
   }
 }
+
+/* ---------- Mobile ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  /* iOS Safari zoom otomatis saat fokus ke input < 16px */
+  @media (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@layer components {
+  .sheet-backdrop,
+  .sheet-panel,
+  .drawer-panel {
+    will-change: transform, opacity;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sheet-backdrop {
+      animation: sheet-fade 180ms ease-out;
+    }
+    /* Drawer menu geser dari kiri */
+    .drawer-panel {
+      animation: drawer-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* Sheet naik dari bawah; di layar >= sm modal tetap di tengah tanpa animasi geser */
+    .sheet-panel {
+      animation: sheet-up 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (min-width: 640px) {
+      .sheet-panel {
+        animation: sheet-fade 180ms ease-out;
+      }
+    }
+  }
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes drawer-in {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes sheet-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* ==========================================================================
+   Tema gelap
+   Aktif saat <html class="dark"> (lihat ThemeToggle). Hanya berlaku di dalam
+   area dashboard (elemen dengan class .dash), jadi login & landing tetap terang.
+   Halaman memakai warna Tailwind arbitrary (bg-[#f8fafb], text-[#1d3345], dst.),
+   jadi tema gelap dibuat dengan memetakan ulang class-class itu di sini.
+   Kalau menambah warna baru di halaman, tambahkan padanannya di bawah.
+   ========================================================================== */
+html.dark { color-scheme: dark; }
+.dark body { background-color: #0c1620; color: rgb(226,236,243); }
+.dark .dash { background-color: #0c1620; color: rgb(226,236,243); }
+@media (max-width: 767px) {
+  .dark .dash { background-image: linear-gradient(to bottom, #12212d, #0c1620); }
+}
+.dark .dash .mnav-fade {
+  background-image: linear-gradient(to bottom, #12212d, rgba(18, 33, 45, 0.85), transparent);
+}
+.dark .dash ::placeholder { color: rgba(226,236,243, 0.35); }
+.dark .dash .sheet-backdrop { background-color: rgba(4, 10, 16, 0.65); }
+
+.dark .dash .bg-white { background-color: #172633; }
+.dark .dash .bg-\[\#f8fafb\] { background-color: #1c2e3d; }
+.dark .dash .bg-\[\#f5f6f6\] { background-color: #101d28; }
+.dark .dash .bg-navy-700 { background-color: #122431; }
+.dark .dash .bg-\[\#c3c4c0\]\/20 { background-color: rgba(138,172,190,.10); }
+.dark .dash .bg-\[\#c3c4c0\]\/30 { background-color: rgba(138,172,190,.14); }
+.dark .dash .bg-\[\#4b7899\]\/10 { background-color: rgba(75,120,153,.24); }
+.dark .dash .bg-\[\#3d6687\]\/5 { background-color: rgba(138,172,190,.08); }
+.dark .dash .bg-red-50 { background-color: rgba(239,68,68,.12); }
+.dark .dash .bg-red-100 { background-color: rgba(239,68,68,.18); }
+.dark .dash .bg-green-100 { background-color: rgba(34,197,94,.16); }
+.dark .dash .bg-amber-100 { background-color: rgba(245,158,11,.16); }
+.dark .dash input.bg-white, .dark .dash select.bg-white, .dark .dash textarea.bg-white { background-color: #1c2e3d; }
+.dark .dash .text-\[\#1d3345\] { color: rgb(226,236,243); }
+.dark .dash .text-\[\#1d3345\]\/40 { color: rgba(226,236,243,.4); }
+.dark .dash .text-\[\#1d3345\]\/50 { color: rgba(226,236,243,.50); }
+.dark .dash .text-\[\#1d3345\]\/55 { color: rgba(226,236,243,.55); }
+.dark .dash .text-\[\#1d3345\]\/60 { color: rgba(226,236,243,.60); }
+.dark .dash .text-\[\#1d3345\]\/65 { color: rgba(226,236,243,.65); }
+.dark .dash .text-\[\#1d3345\]\/70 { color: rgba(226,236,243,.70); }
+.dark .dash .text-ink { color: rgb(226,236,243); }
+.dark .dash .text-ink\/60 { color: rgba(226,236,243,.6); }
+.dark .dash .text-ink\/70 { color: rgba(226,236,243,.7); }
+.dark .dash .text-\[\#3d6687\] { color: #9cc0d6; }
+.dark .dash .text-\[\#3d6687\]\/60 { color: rgba(156,192,214,.7); }
+.dark .dash .text-navy-700 { color: #9cc0d6; }
+.dark .dash .text-red-600 { color: #fca5a5; }
+.dark .dash .text-red-700 { color: #fca5a5; }
+.dark .dash .text-green-700 { color: #86efac; }
+.dark .dash .text-amber-700 { color: #fcd34d; }
+.dark .dash .text-amber-600 { color: #fbbf24; }
+.dark .dash .border-\[\#3d6687\]\/10 { border-color: rgba(138,172,190,.16); }
+.dark .dash .border-\[\#3d6687\]\/15 { border-color: rgba(138,172,190,.20); }
+.dark .dash .border-\[\#3d6687\]\/20 { border-color: rgba(138,172,190,.26); }
+.dark .dash .border-\[\#3d6687\]\/\[0\.08\] { border-color: rgba(138,172,190,.12); }
+.dark .dash .border-\[\#4b7899\]\/20 { border-color: rgba(138,172,190,.24); }
+.dark .dash .border-ink\/10 { border-color: rgba(138,172,190,.18); }
+.dark .dash .border-ink\/15 { border-color: rgba(138,172,190,.22); }
+.dark .dash .border-red-200 { border-color: rgba(248,113,113,.35); }
+.dark .dash .hover\:bg-\[\#3d6687\]\/5:hover { background-color: rgba(138,172,190,.10); }
+.dark .dash .hover\:bg-\[\#4b7899\]\/10:hover { background-color: rgba(75,120,153,.30); }
+.dark .dash .hover\:bg-\[\#4b7899\]\/20:hover { background-color: rgba(75,120,153,.38); }
+.dark .dash .hover\:bg-\[\#4b7899\]\/\[0\.035\]:hover { background-color: rgba(75,120,153,.14); }
+.dark .dash .hover\:bg-\[\#4b7899\]\/\[0\.04\]:hover { background-color: rgba(75,120,153,.14); }
+.dark .dash .hover\:bg-\[\#1d3345\]\/5:hover { background-color: rgba(226,236,243,.07); }
+.dark .dash .hover\:bg-red-50:hover { background-color: rgba(239,68,68,.16); }
+.dark .dash .hover\:border-\[\#3d6687\]\/35:hover { border-color: rgba(138,172,190,.45); }
+.dark .dash .hover\:border-\[\#4b7899\]\/40:hover { border-color: rgba(138,172,190,.45); }
+.dark .dash .hover\:border-\[\#4b7899\]\/30:hover { border-color: rgba(138,172,190,.36); }
+.dark .dash .hover\:text-\[\#3d6687\]:hover { color: #cfe2ee; }
+.dark .dash .from-\[\#3d6687\] { --tw-gradient-from: #1f4864 var(--tw-gradient-from-position); --tw-gradient-to: rgba(31,72,100,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.dark .dash .via-\[\#4b7899\] { --tw-gradient-to: rgba(40,90,123,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), #285a7b var(--tw-gradient-via-position), var(--tw-gradient-to); }
+.dark .dash .to-\[\#5b87a6\] { --tw-gradient-to: #2f6688 var(--tw-gradient-to-position); }
+.dark .dash .to-\[\#4b7899\] { --tw-gradient-to: #285a7b var(--tw-gradient-to-position); }
+.dark .dash .from-\[\#3d6687\]\/\[0\.07\] { --tw-gradient-from: rgba(138,172,190,.10) var(--tw-gradient-from-position); --tw-gradient-to: rgba(138,172,190,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }

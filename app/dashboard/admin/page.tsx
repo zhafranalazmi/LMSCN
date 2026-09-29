@@ -1,5 +1,6 @@
 "use client";
 
+import GreetingLine from "@/components/shared/GreetingLine";
 import { useEffect, useState } from "react";
 
 type Stats = {
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
         <div className="max-w-3xl">
+          <GreetingLine />
           <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
             RINGKASAN SISTEM
           </span>

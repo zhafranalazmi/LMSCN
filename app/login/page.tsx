@@ -37,7 +37,7 @@ export default function LoginPage() {
   }
 
     return (
-    <main className="relative min-h-screen flex items-center justify-center px-4">
+    <main className="relative min-h-[100dvh] flex items-center justify-center px-4 py-8">
       {/* Background */}
       <div
         className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-white/40 p-8"
+        className="w-full max-w-sm bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-white/40 p-6 sm:p-8"
       >
         <h1 className="font-display text-2xl font-bold text-navy-700 mb-1">
           Masuk

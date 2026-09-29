@@ -469,8 +469,8 @@ export default function GuruPage() {
 
       {/* Modal Edit Guru */}
       {editTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1d3345]/55 px-4 py-6 backdrop-blur-sm">
-          <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1d3345]/55 backdrop-blur-sm sm:items-center sm:px-4 sm:py-6">
+          <div className="sheet-panel flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-b-none rounded-t-[28px] bg-white pb-[env(safe-area-inset-bottom)] shadow-2xl sm:max-h-[85vh] sm:rounded-[28px] sm:pb-0">
             <div className="bg-gradient-to-r from-[#3d6687] to-[#4b7899] px-6 py-5 text-white">
               <p className="text-xs font-bold uppercase tracking-wider text-white/60">Data Guru</p>
               <h3 className="mt-1 text-xl font-bold">Edit Guru</h3>
