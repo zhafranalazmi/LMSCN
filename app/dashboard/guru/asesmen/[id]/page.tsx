@@ -62,6 +62,10 @@ export default function HasilAsesmenPage() {
   }, [asesmenId]);
 
   function openGrading(j: JawabanSiswa) {
+    if (activeGrading === j._id) {
+      setActiveGrading(null);
+      return;
+    }
     setActiveGrading(j._id);
     const initial: Record<string, number> = {};
     j.jawaban.forEach((item) => {
@@ -114,9 +118,18 @@ export default function HasilAsesmenPage() {
             <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Pengerjaan</p>
             <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Jawaban Siswa</h2>
           </div>
-          <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
-            {jawabanList.length} Siswa
-          </span>
+          <div className="flex items-center gap-2">
+            <a
+              href={`/api/guru/asesmen/${asesmenId}/export`}
+              download
+              className="rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+            >
+              Download Excel
+            </a>
+            <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
+              {jawabanList.length} Siswa
+            </span>
+          </div>
         </div>
 
         <div className="p-5 sm:p-6">

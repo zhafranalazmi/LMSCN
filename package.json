@@ -12,7 +12,9 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.11.0",
+    "exceljs": "^4.4.0",
     "lucide-react": "^1.39.0",
+    "mammoth": "^1.13.0",
     "mongoose": "^8.5.3",
     "next": "14.2.15",
     "next-auth": "^4.24.7",

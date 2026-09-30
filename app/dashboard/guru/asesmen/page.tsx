@@ -37,6 +37,8 @@ export default function AsesmenPage() {
   const [mapelSaya, setMapelSaya] = useState<string[]>([]);
   const [kelasSaya, setKelasSaya] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [parsingWord, setParsingWord] = useState(false);
+  const [wordError, setWordError] = useState<string | null>(null);
 
   const [judul, setJudul] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
@@ -129,6 +131,36 @@ export default function AsesmenPage() {
         return { ...s, pilihan: pilihanBaru };
       })
     );
+  }
+
+  async function handleUploadWord(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setWordError(null);
+    setParsingWord(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/guru/asesmen/parse-word", {
+      method: "POST",
+      body: formData,
+    });
+
+    setParsingWord(false);
+    e.target.value = "";
+
+    if (!res.ok) {
+      const data = await res.json();
+      setWordError(data.message ?? "Gagal membaca file Word");
+      return;
+    }
+
+    const data = await res.json();
+    setSoalForm((prev) => {
+      const sudahAdaIsi = prev.some((s) => s.pertanyaan.trim() !== "");
+      return sudahAdaIsi ? [...prev, ...data.soal] : data.soal;
+    });
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -306,6 +338,29 @@ export default function AsesmenPage() {
                   className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />
               </div>
+            </div>
+
+            {/* Import dari Word */}
+            <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] p-4">
+              <p className="mb-2 text-sm font-bold text-[#1d3345]">Import Soal dari Word (.docx)</p>
+              <p className="mb-3 text-xs text-[#1d3345]/50">
+                Format mengikuti ekspor bank soal CBT: setiap soal diawali <span className="font-mono">Q1&gt;:</span>,
+                tiap opsi jawaban pakai <span className="font-mono">A&gt;:</span>, poin soal pakai{" "}
+                <span className="font-mono">PT&gt;:</span>, dan kunci jawaban pakai{" "}
+                <span className="font-mono">K&gt;: B</span> (huruf sesuai urutan opsi). Baris{" "}
+                <span className="font-mono">PF&gt;:</span> diabaikan.
+              </p>
+              <input
+                type="file"
+                accept=".docx"
+                onChange={handleUploadWord}
+                disabled={parsingWord}
+                className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[#3d6687] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white"
+              />
+              {parsingWord && (
+                <p className="mt-2 text-xs text-[#1d3345]/50">Membaca file...</p>
+              )}
+              {wordError && <p className="mt-2 text-xs text-red-600">{wordError}</p>}
             </div>
 
             {/* Daftar Soal */}
@@ -488,9 +543,17 @@ export default function AsesmenPage() {
                   >
                     Lihat Hasil
                   </Link>
+                  <a
+    href={`/api/guru/asesmen/${a._id}/export`}
+   download
+   className="rounded-lg border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+>
+   Download Excel
+  </a>
                   <button
                     onClick={() => handleDelete(a._id)}
                     className="rounded-lg border border-red-200 px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
+                    
                   >
                     Hapus
                   </button>
