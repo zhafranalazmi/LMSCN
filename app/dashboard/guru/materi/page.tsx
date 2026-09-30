@@ -148,17 +148,17 @@ export default function MateriPage() {
             PORTAL GURU
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Upload Materi
+            Materi
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Unggah materi pembelajaran untuk kelas dan mapel yang kamu ampu.
+            Unggah dan kelola materi untuk mata pelajaran serta kelas yang Anda ampu.
           </p>
         </div>
       </section>
 
       {tidakBisaUpload && !loading && (
         <div className="mb-6 rounded-2xl border border-[#3d6687]/10 bg-[#4b7899]/10 px-4 py-3 text-sm text-[#3d6687]">
-          Kamu belum di-assign ke mapel atau kelas apapun. Hubungi admin untuk di-assign dulu
+          Akun Anda belum memiliki penugasan mata pelajaran atau kelas. Hubungi administrator sekolah.
           sebelum bisa mengunggah materi.
         </div>
       )}
@@ -256,7 +256,7 @@ export default function MateriPage() {
                       : "border-[#3d6687]/10 bg-[#f8fafb] text-[#1d3345]/65 hover:border-[#4b7899]/40"
                   }`}
                 >
-                  Upload PDF
+                  Unggah PDF
                 </button>
               </div>
 
@@ -283,7 +283,7 @@ export default function MateriPage() {
               disabled={submitting}
               className="rounded-xl bg-[#3d6687] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#2f5573] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? (uploadingLabel ?? "Menyimpan...") : "+ Upload Materi"}
+              {submitting ? (uploadingLabel ?? "Menyimpan...") : "+ Unggah Materi"}
             </button>
 
             {error && (
@@ -300,7 +300,7 @@ export default function MateriPage() {
         <div className="flex flex-col gap-3 border-b border-[#3d6687]/10 bg-gradient-to-r from-[#3d6687]/[0.07] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Daftar Aktif</p>
-            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Materi yang Kamu Unggah</h2>
+            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Materi yang Diunggah</h2>
           </div>
           <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
             {materiList.length} Materi
@@ -318,7 +318,7 @@ export default function MateriPage() {
           {!loading && materiList.length === 0 && (
             <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] px-4 py-8 text-center">
               <p className="text-sm font-medium text-[#1d3345]/50">
-                Belum ada materi yang kamu unggah.
+                Belum ada materi yang diunggah.
               </p>
             </div>
           )}

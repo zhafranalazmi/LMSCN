@@ -152,18 +152,18 @@ export default function TugasPage() {
             PORTAL GURU
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Buat Tugas
+            Tugas
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Buat tugas baru untuk kelas dan mapel yang kamu ampu.
+            Buat dan kelola tugas untuk mata pelajaran serta kelas yang Anda ampu.
           </p>
         </div>
       </section>
 
       {tidakBisaBuatTugas && !loading && (
         <div className="mb-6 rounded-2xl border border-[#3d6687]/10 bg-[#4b7899]/10 px-4 py-3 text-sm text-[#3d6687]">
-          Kamu belum di-assign ke mapel atau kelas apapun. Hubungi admin untuk di-assign dulu
-          sebelum bisa membuat tugas.
+          Akun Anda belum memiliki penugasan mata pelajaran atau kelas. Hubungi administrator sekolah.
+          sebelum membuat tugas.
         </div>
       )}
 
@@ -273,7 +273,7 @@ export default function TugasPage() {
                       : "border-[#3d6687]/10 bg-[#f8fafb] text-[#1d3345]/65 hover:border-[#4b7899]/40"
                   }`}
                 >
-                  Upload PDF
+                  Unggah PDF
                 </button>
               </div>
 
@@ -317,7 +317,7 @@ export default function TugasPage() {
         <div className="flex flex-col gap-3 border-b border-[#3d6687]/10 bg-gradient-to-r from-[#3d6687]/[0.07] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Daftar Aktif</p>
-            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Tugas yang Kamu Buat</h2>
+            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Tugas yang Dibuat</h2>
           </div>
           <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
             {tugasList.length} Tugas
@@ -335,7 +335,7 @@ export default function TugasPage() {
           {!loading && tugasList.length === 0 && (
             <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] px-4 py-8 text-center">
               <p className="text-sm font-medium text-[#1d3345]/50">
-                Belum ada tugas yang kamu buat.
+                Belum ada tugas yang dibuat.
               </p>
             </div>
           )}

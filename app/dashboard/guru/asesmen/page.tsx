@@ -231,14 +231,14 @@ export default function AsesmenPage() {
             Asesmen
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Buat kuis atau ujian online dan nilai jawaban siswa.
+            Buat asesmen daring dan tinjau hasil pengerjaan siswa.
           </p>
         </div>
       </section>
 
       {tidakBisaBuat && !loading && (
         <div className="mb-6 rounded-2xl border border-[#3d6687]/10 bg-[#4b7899]/10 px-4 py-3 text-sm text-[#3d6687]">
-          Kamu belum di-assign ke mapel atau kelas apapun. Hubungi admin untuk di-assign dulu
+            Akun Anda belum memiliki penugasan mata pelajaran atau kelas. Hubungi administrator sekolah.
           sebelum bisa membuat asesmen.
         </div>
       )}
@@ -492,7 +492,7 @@ export default function AsesmenPage() {
         <div className="flex flex-col gap-3 border-b border-[#3d6687]/10 bg-gradient-to-r from-[#3d6687]/[0.07] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Daftar Aktif</p>
-            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Asesmen yang Kamu Buat</h2>
+            <h2 className="mt-1 text-lg font-bold text-[#1d3345]">Asesmen yang Dibuat</h2>
           </div>
           <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
             {asesmenList.length} Asesmen
@@ -510,7 +510,7 @@ export default function AsesmenPage() {
           {!loading && asesmenList.length === 0 && (
             <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] px-4 py-8 text-center">
               <p className="text-sm font-medium text-[#1d3345]/50">
-                Belum ada asesmen yang kamu buat.
+                Belum ada asesmen yang dibuat.
               </p>
             </div>
           )}
@@ -548,7 +548,7 @@ export default function AsesmenPage() {
    download
    className="rounded-lg border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
 >
-   Download Excel
+  Unduh Excel
   </a>
                   <button
                     onClick={() => handleDelete(a._id)}

@@ -71,20 +71,20 @@ export default function TugasSiswaPage() {
       const formData = new FormData();
       formData.append("file", pdfFile);
 
-      const uploadRes = await fetch("/api/guru/upload", {
+      const uploadRes = await fetch("/api/siswa/upload", {
         method: "POST",
         body: formData,
       });
 
       setUploadingLabel(null);
+      const uploadData = await uploadRes.json();
 
       if (!uploadRes.ok) {
-        setError("Gagal mengunggah PDF");
+        setError(uploadData.message ?? "Gagal mengunggah PDF");
         setSubmitting(false);
         return;
       }
 
-      const uploadData = await uploadRes.json();
       lampiranUrl = uploadData.url;
     }
 
@@ -117,7 +117,7 @@ export default function TugasSiswaPage() {
             Tugas
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Daftar tugas dari guru untuk kelas kamu.
+            Daftar tugas dari guru untuk kelas Anda.
           </p>
         </div>
       </section>
@@ -223,7 +223,7 @@ export default function TugasSiswaPage() {
                               : "border-[#3d6687]/10 bg-white text-[#1d3345]/65"
                           }`}
                         >
-                          Upload PDF
+                          Unggah PDF
                         </button>
                       </div>
 

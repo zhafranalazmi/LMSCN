@@ -24,20 +24,20 @@ export default function LandingPage() {
 
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6">
         <span className="uppercase tracking-widest text-xs text-white/80 font-semibold mb-3">
-          Learning Management System
+          PORTAL PEMBELAJARAN
         </span>
         <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-bold text-white max-w-3xl leading-tight">
           Satu portal untuk seluruh proses belajar di Citra Negara
         </h1>
         <p className="mt-5 max-w-xl text-white/80">
-          Materi, tugas, dan penilaian untuk siswa, guru, dan manajemen sekolah —
-          dari jurusan PPLG sampai Perhotelan — dalam satu tempat.
+          Materi, tugas, asesmen, dan rekap nilai untuk siswa, guru, serta
+          pengelola sekolah dalam satu portal.
         </p>
         <Link
           href="/login"
           className="mt-8 rounded-full bg-navy-500 text-white px-8 py-3 font-medium hover:bg-navy-700 transition-colors"
         >
-          Masuk ke akun kamu
+          Masuk ke Portal Pembelajaran
         </Link>
       </section>
 

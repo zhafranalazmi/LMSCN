@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function KepsekDashboard() {
   const menu = [
-    { title: "Lihat Guru", desc: "Lihat daftar guru dan aktivitasnya", icon: "👩‍🏫", href: "/dashboard/kepsek/guru" },
-    { title: "Download Nilai", desc: "Unduh rekap nilai per mapel & guru", icon: "📊", href: "/dashboard/kepsek/nilai" },
+    { title: "Data Guru", desc: "Tinjau data dan aktivitas guru", icon: "👩‍🏫", href: "/dashboard/kepsek/guru" },
+    { title: "Rekap Nilai", desc: "Tinjau dan unduh nilai per mata pelajaran", icon: "📊", href: "/dashboard/kepsek/nilai" },
   ];
 
   return (
@@ -16,7 +16,7 @@ export default function KepsekDashboard() {
             PORTAL KEPALA SEKOLAH
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Dashboard Kepala Sekolah
+            Ringkasan Kepala Sekolah
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
             Pantau aktivitas guru dan unduh rekap nilai.

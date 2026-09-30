@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { Suspense, useEffect, useState, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 
 const JURUSAN_LIST = ["PPLG", "MPLB", "PM", "TJKT", "DKV", "Perhotelan"];
@@ -22,6 +22,20 @@ interface Kelas {
 }
 
 export default function SiswaPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="p-6 text-sm font-medium text-[#1d3345]/60">
+          Memuat data siswa...
+        </main>
+      }
+    >
+      <SiswaAdminContent />
+    </Suspense>
+  );
+}
+
+function SiswaAdminContent() {
   const searchParams = useSearchParams();
   const kelasDariUrl = searchParams.get("kelas");
 
@@ -266,7 +280,7 @@ export default function SiswaPage() {
       <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
         <div className="max-w-3xl">
           <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            ADMINISTRASI AKADEMIK
+            PORTAL ADMIN
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Manajemen Siswa

@@ -55,7 +55,7 @@ export default function KelasSayaPage() {
             Kelas Saya
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Lihat daftar siswa di kelas yang kamu ampu.
+            Pilih kelas yang Anda ampu untuk melihat daftar siswa.
           </p>
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function KelasSayaPage() {
           </div>
           <h3 className="font-bold text-[#1d3345]">Belum ada kelas</h3>
           <p className="mt-1 text-sm text-[#1d3345]/50">
-            Kamu belum di-assign ke kelas manapun oleh admin.
+            Akun Anda belum memiliki penugasan kelas. Hubungi administrator sekolah.
           </p>
         </div>
       )}

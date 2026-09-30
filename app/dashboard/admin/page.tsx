@@ -41,7 +41,7 @@ export default function AdminDashboard() {
             RINGKASAN SISTEM
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Dashboard Admin
+            Ringkasan Admin
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
             Ringkasan akun yang sudah terdaftar di sistem LMS SMK Citra Negara.

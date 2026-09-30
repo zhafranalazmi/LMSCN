@@ -243,7 +243,7 @@ export default function GuruPage() {
       <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
         <div className="max-w-3xl">
           <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            ADMINISTRASI AKADEMIK
+            PORTAL ADMIN
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Manajemen Guru
@@ -258,7 +258,7 @@ export default function GuruPage() {
         <div className="mb-4">
           <h2 className="text-base font-bold text-[#1d3345]">Impor Guru dari Excel</h2>
           <p className="mt-1 text-sm text-[#1d3345]/55">
-            Gunakan template dengan kolom Nama, Email, Password, Mapel, dan Kelas Diampu. Pisahkan beberapa mapel atau kelas dengan koma.
+            Gunakan template dengan kolom Nama, Email, Password, Mata Pelajaran, dan Kelas Diampu. Pisahkan beberapa mata pelajaran atau kelas dengan koma.
           </p>
         </div>
         <form onSubmit={handleExcelImport} className="flex flex-col gap-3 sm:flex-row sm:items-center">

@@ -135,10 +135,10 @@ export default function AkunPage() {
             ADMINISTRASI AKUN
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Akun Kepala Sekolah & Kurikulum
+            Manajemen Akun Pengelola
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Kelola akun untuk role Kepala Sekolah dan Kurikulum.
+            Kelola akun Kepala Sekolah dan Kurikulum.
           </p>
         </div>
       </section>

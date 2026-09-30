@@ -20,6 +20,9 @@ export async function PUT(
   if (nilai === undefined || nilai === null) {
     return NextResponse.json({ message: "Nilai wajib diisi" }, { status: 400 });
   }
+  if (typeof nilai !== "number" || !Number.isFinite(nilai) || nilai < 0 || nilai > 100) {
+    return NextResponse.json({ message: "Nilai harus berupa angka antara 0 dan 100" }, { status: 400 });
+  }
 
   await connectDB();
 

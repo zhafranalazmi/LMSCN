@@ -36,7 +36,7 @@ export default function LoginPage() {
     router.push(`/dashboard/${role}`);
   }
 
-    return (
+  return (
     <main className="relative min-h-[100dvh] flex items-center justify-center px-4 py-8">
       {/* Background */}
       <div
@@ -52,7 +52,7 @@ export default function LoginPage() {
         <h1 className="font-display text-2xl font-bold text-navy-700 mb-1">
           Masuk
         </h1>
-        <p className="text-sm text-ink/60 mb-6">LMS SMK Citra Negara</p>
+        <p className="text-sm text-ink/60 mb-6">Portal Pembelajaran · SMK Citra Negara</p>
 
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 text-red-700 text-sm px-3 py-2">

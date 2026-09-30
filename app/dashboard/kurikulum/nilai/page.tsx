@@ -81,13 +81,13 @@ export default function DownloadNilaikurikulumPage() {
       <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
         <div className="max-w-3xl">
           <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            PORTAL KEPALA SEKOLAH
+            PORTAL KURIKULUM
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Download Nilai
+            Rekap Nilai
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Pilih guru dan mapel untuk melihat & mengunduh rekap nilai.
+            Pilih guru dan mata pelajaran untuk melihat serta mengunduh rekap nilai.
           </p>
         </div>
       </section>
@@ -140,7 +140,7 @@ export default function DownloadNilaikurikulumPage() {
               onClick={handleDownload}
               className="rounded-xl border border-[#3d6687]/15 px-6 py-3 text-sm font-bold text-[#3d6687] transition hover:border-[#3d6687]/35 hover:bg-[#3d6687]/5"
             >
-              ⬇ Download CSV
+              Unduh CSV
             </button>
           )}
         </div>

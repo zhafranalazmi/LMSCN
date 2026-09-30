@@ -4,10 +4,10 @@ import Link from "next/link";
 export default function GuruDashboard() {
   const menu = [
     { title: "Kelas Saya", desc: "Lihat siswa per kelas yang diampu", icon: "🏫", href: "/dashboard/guru/kelas" },
-    { title: "Buat Tugas", desc: "Buat tugas baru (PDF/link)", icon: "📝", href: "/dashboard/guru/tugas" },
-    { title: "Upload Materi", desc: "Unggah materi pembelajaran", icon: "📚", href: "/dashboard/guru/materi" },
-    { title: "Asesmen", desc: "Buat kuis/ujian online & beri penilaian", icon: "🧪", href: "/dashboard/guru/asesmen" },
-   { title: "Generate Nilai", desc: "Rekap nilai per mapel/kelas", icon: "📊", href: "/dashboard/guru/nilai" },
+    { title: "Tugas", desc: "Buat dan kelola tugas kelas", icon: "📝", href: "/dashboard/guru/tugas" },
+    { title: "Materi", desc: "Unggah materi pembelajaran", icon: "📚", href: "/dashboard/guru/materi" },
+    { title: "Asesmen", desc: "Buat asesmen daring dan nilai hasilnya", icon: "🧪", href: "/dashboard/guru/asesmen" },
+  { title: "Rekap Nilai", desc: "Tinjau asesmen dan nilai tugas", icon: "📊", href: "/dashboard/guru/nilai" },
   
   ];
 
@@ -20,7 +20,7 @@ export default function GuruDashboard() {
             PORTAL GURU
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Dashboard Guru
+            Ringkasan Guru
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
             Kelola kelas, materi, tugas, dan penilaian dari satu tempat.

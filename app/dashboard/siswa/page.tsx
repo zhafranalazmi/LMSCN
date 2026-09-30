@@ -5,7 +5,7 @@ export default function SiswaDashboard() {
   const menu = [
   { title: "Tugas", desc: "Lihat tugas dari guru", icon: "📝", href: "/dashboard/siswa/tugas" },
   { title: "Materi", desc: "Lihat materi pembelajaran", icon: "📚", href: "/dashboard/siswa/materi" },
-  { title: "Asesmen", desc: "Kerjakan kuis/ujian online", icon: "🧪", href: "/dashboard/siswa/asesmen" },
+  { title: "Asesmen", desc: "Kerjakan kuis dan ujian daring", icon: "🧪", href: "/dashboard/siswa/asesmen" },
 
 ];
 
@@ -18,10 +18,10 @@ export default function SiswaDashboard() {
             PORTAL SISWA
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Dashboard Siswa
+            Ringkasan Siswa
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Akses tugas, materi, asesmen, dan nilai kamu di sini.
+            Lihat tugas, materi, asesmen, dan hasil belajar Anda.
           </p>
         </div>
       </section>

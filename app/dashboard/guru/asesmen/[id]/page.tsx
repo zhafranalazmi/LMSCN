@@ -124,7 +124,7 @@ export default function HasilAsesmenPage() {
               download
               className="rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
             >
-              Download Excel
+              Unduh Excel
             </a>
             <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
               {jawabanList.length} Siswa

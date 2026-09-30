@@ -8,6 +8,7 @@ import JawabanSiswa from "@/models/JawabanSiswa";
 import Tugas from "@/models/Tugas";
 import PengumpulanTugas from "@/models/PengumpulanTugas";
 import Siswa from "@/models/Siswa";
+import Guru from "@/models/Guru";
 
 export const runtime = "nodejs";
 
@@ -27,11 +28,14 @@ export async function GET(req: Request) {
 
   await connectDB();
 
-  const asesmenList = await Asesmen.find({
-    guru: (session.user as any).id,
-    mapel,
-    kelas,
-  }).select("judul soal");
+  const guru = await Guru.findById((session.user as any).id)
+    .select("mapel kelasDiampu")
+    .lean<{ mapel: string[]; kelasDiampu: string[] }>();
+  if (!guru?.mapel?.includes(mapel) || !guru?.kelasDiampu?.includes(kelas)) {
+    return NextResponse.json({ message: "Kamu tidak di-assign ke mapel atau kelas ini" }, { status: 403 });
+  }
+
+  const asesmenList = await Asesmen.find({ mapel, kelas }).select("judul soal");
   const tugasList = await Tugas.find({
     guru: (session.user as any).id,
     mapel,
@@ -49,7 +53,7 @@ export async function GET(req: Request) {
     string,
     {
       siswa: { name: string; email: string };
-      nilai: Record<string, { nilaiTotal: number | null; status: string } | null>;
+      nilai: Record<string, { nilaiTotal: number | null; status: string; pengumpulanId?: string } | null>;
     }
   >();
 
@@ -89,6 +93,7 @@ export async function GET(req: Request) {
     siswaMap.get(siswaId)!.nilai[`tugas:${pengumpulan.tugas.toString()}`] = {
       nilaiTotal: pengumpulan.nilai ?? null,
       status: pengumpulan.status,
+      pengumpulanId: pengumpulan._id.toString(),
     };
   }
 

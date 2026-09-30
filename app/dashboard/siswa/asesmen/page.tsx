@@ -38,7 +38,7 @@ export default function AsesmenSiswaPage() {
             Asesmen
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Kuis dan ujian online untuk kelas kamu.
+            Kuis dan ujian daring untuk kelas Anda.
           </p>
         </div>
       </section>

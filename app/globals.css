@@ -38,6 +38,52 @@
 }
 
 @layer components {
+  .dash main.min-h-full {
+    border-radius: 0 !important;
+    background-color: transparent !important;
+  }
+
+  .dash main > section[class*="bg-gradient-to-r"] {
+    border: 1px solid rgba(33, 26, 29, 0.1) !important;
+    border-left: 4px solid #3a7ca5 !important;
+    border-radius: 14px !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    color: #211a1d !important;
+  }
+
+  .dash main > section[class*="bg-gradient-to-r"] h1 {
+    color: #211a1d !important;
+  }
+
+  .dash main > section[class*="bg-gradient-to-r"] p {
+    color: rgba(33, 26, 29, 0.62) !important;
+  }
+
+  .dash main > section[class*="bg-gradient-to-r"] span {
+    border-color: rgba(58, 124, 165, 0.18) !important;
+    background-color: rgba(58, 124, 165, 0.08) !important;
+    color: #2f6690 !important;
+  }
+
+  .dash main [class*="rounded-[24px]"]:not(.sheet-panel):not(.drawer-panel) {
+    border-radius: 8px !important;
+  }
+
+  .dash main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  .dash main select,
+  .dash main textarea {
+    border-radius: 8px;
+  }
+
+  .dash main button[class*="rounded-lg"],
+  .dash main button[class*="rounded-xl"],
+  .dash main a[class*="rounded-lg"],
+  .dash main a[class*="rounded-xl"] {
+    border-radius: 8px !important;
+  }
+
   .sheet-backdrop,
   .sheet-panel,
   .drawer-panel {
@@ -97,6 +143,18 @@ html.dark { color-scheme: dark; }
 }
 .dark .dash ::placeholder { color: rgba(226,236,243, 0.35); }
 .dark .dash .sheet-backdrop { background-color: rgba(4, 10, 16, 0.65); }
+.dark .dash main > section[class*="bg-gradient-to-r"] {
+  border-color: rgba(138, 172, 190, 0.18) !important;
+  background-color: #172633 !important;
+  color: rgb(226, 236, 243) !important;
+}
+.dark .dash main > section[class*="bg-gradient-to-r"] h1 { color: rgb(226, 236, 243) !important; }
+.dark .dash main > section[class*="bg-gradient-to-r"] p { color: rgba(226, 236, 243, 0.62) !important; }
+.dark .dash main > section[class*="bg-gradient-to-r"] span {
+  border-color: rgba(138, 172, 190, 0.24) !important;
+  background-color: rgba(138, 172, 190, 0.12) !important;
+  color: #b8d4e2 !important;
+}
 
 .dark .dash .bg-white { background-color: #172633; }
 .dark .dash .bg-\[\#f8fafb\] { background-color: #1c2e3d; }

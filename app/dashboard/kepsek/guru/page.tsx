@@ -36,10 +36,10 @@ export default function LihatGuruKepsekPage() {
             PORTAL KEPALA SEKOLAH
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Lihat Guru
+            Data Guru
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Daftar guru beserta mapel, kelas yang diampu, dan aktivitasnya.
+            Tinjau mata pelajaran, kelas yang diampu, dan aktivitas guru.
           </p>
         </div>
       </section>

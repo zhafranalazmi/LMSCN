@@ -34,7 +34,7 @@ export default function MateriSiswaPage() {
             Materi
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Materi pembelajaran untuk kelas kamu.
+            Materi pembelajaran untuk kelas Anda.
           </p>
         </div>
       </section>

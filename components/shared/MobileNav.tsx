@@ -38,7 +38,7 @@ export default function MobileNav({
 
   const current = menu.find((i) => isActive(i.href)) ?? menu[0];
   const title =
-    current?.href === rootHref ? `Dashboard ${roleLabel}` : current?.label;
+    current?.href === rootHref ? "Ringkasan" : current?.label;
 
   // Tutup drawer setiap pindah halaman
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function MobileNav({
                   SMK Citra Negara
                 </p>
                 <p className="truncate text-xs text-white/50">
-                  Sistem LMS Sekolah
+                  Portal Pembelajaran
                 </p>
               </div>
               <button
@@ -173,10 +173,8 @@ export default function MobileNav({
               </button>
             </div>
 
-            <div className="border-t border-white/10 px-5 py-4 text-[11px] text-white/30">
-              © 2026 SMK Citra Negara
-              <br />
-              v1.0 — Portal {roleLabel}
+            <div className="border-t border-white/10 px-5 py-4 text-[11px] text-white/40">
+              SMK Citra Negara · 2026
             </div>
           </aside>
         </div>

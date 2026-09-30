@@ -165,13 +165,13 @@ export default function KelasPage() {
       <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
         <div className="max-w-3xl">
           <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            ADMINISTRASI AKADEMIK
+            PORTAL ADMIN
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
             Manajemen Kelas
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Tambah, kelompokkan, dan kelola daftar kelas berdasarkan tingkat dan jurusan.
+            Kelola daftar kelas berdasarkan tingkat dan jurusan.
           </p>
         </div>
       </section>

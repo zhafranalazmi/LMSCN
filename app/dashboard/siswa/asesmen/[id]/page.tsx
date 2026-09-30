@@ -179,7 +179,7 @@ export default function KerjakanAsesmenPage() {
             </h1>
             <p className="mb-6 text-sm text-[#1d3345]/60">
               {asesmen.soal.length} soal · {asesmen.durasiMenit} menit. Ujian akan tampil
-              dalam layar penuh dan waktu mulai berjalan setelah kamu menekan tombol di bawah.
+              dalam layar penuh dan waktu mulai berjalan setelah Anda menekan tombol di bawah.
             </p>
             <div className="flex gap-3">
               <button
@@ -232,7 +232,7 @@ export default function KerjakanAsesmenPage() {
       <main className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
         {keluarFullscreen && (
           <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            <span>Kamu keluar dari mode layar penuh.</span>
+            <span>Anda keluar dari mode layar penuh.</span>
             <button
               onClick={() => document.documentElement.requestFullscreen().catch(() => {})}
               className="shrink-0 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white"
@@ -286,7 +286,7 @@ export default function KerjakanAsesmenPage() {
                   onChange={(e) =>
                     setJawaban((prev) => ({ ...prev, [s._id]: { jawabanEsai: e.target.value } }))
                   }
-                  placeholder="Tulis jawaban kamu..."
+                  placeholder="Tulis jawaban Anda..."
                   rows={4}
                   className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 />

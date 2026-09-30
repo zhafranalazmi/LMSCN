@@ -10,6 +10,7 @@ interface AsesmenRingkas {
 interface NilaiItem {
   nilaiTotal: number | null;
   status: string;
+  pengumpulanId?: string;
 }
 
 interface RekapSiswa {
@@ -30,6 +31,12 @@ export default function NilaiPage() {
   const [loadingRekap, setLoadingRekap] = useState(false);
   const [downloadingExcel, setDownloadingExcel] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [nilaiTugasDraft, setNilaiTugasDraft] = useState<
+    Record<string, { tugasId: string; nilai: string }>
+  >({});
+  const [savingTugas, setSavingTugas] = useState(false);
+  const [saveTugasMessage, setSaveTugasMessage] = useState<string | null>(null);
+  const [saveTugasError, setSaveTugasError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadMe() {
@@ -52,6 +59,9 @@ export default function NilaiPage() {
   }, [kelasSaya]);
 
   useEffect(() => {
+    setNilaiTugasDraft({});
+    setSaveTugasMessage(null);
+    setSaveTugasError(null);
     if (!mapel || !kelas) return;
     async function loadRekap() {
       setLoadingRekap(true);
@@ -68,10 +78,76 @@ export default function NilaiPage() {
   function rataRata(row: RekapSiswa) {
     const nilaiValid = [...asesmenList.map((item) => `asesmen:${item._id}`), ...tugasList.map((item) => `tugas:${item._id}`)]
       .map((key) => row.nilai[key])
-      .filter((item): item is NilaiItem => item !== null && item !== undefined && item.nilaiTotal !== null);
+      .filter(
+        (item): item is NilaiItem & { nilaiTotal: number } =>
+          item !== null && item !== undefined && typeof item.nilaiTotal === "number"
+      );
     if (nilaiValid.length === 0) return "-";
     const total = nilaiValid.reduce((sum, n) => sum + n.nilaiTotal, 0);
     return (total / nilaiValid.length).toFixed(1);
+  }
+
+  async function handleSimpanNilaiTugas() {
+    if (Object.values(nilaiTugasDraft).some((draft) => draft.nilai.trim() === "")) {
+      setSaveTugasError("Nilai tugas tidak boleh kosong.");
+      return;
+    }
+
+    const updates = Object.entries(nilaiTugasDraft).map(([pengumpulanId, draft]) => ({
+      pengumpulanId,
+      tugasId: draft.tugasId,
+      nilai: Number(draft.nilai),
+    }));
+    if (updates.length === 0) return;
+
+    if (updates.some((update) => !Number.isFinite(update.nilai) || update.nilai < 0 || update.nilai > 100)) {
+      setSaveTugasError("Nilai tugas harus antara 0 dan 100.");
+      return;
+    }
+
+    setSavingTugas(true);
+    setSaveTugasError(null);
+    setSaveTugasMessage(null);
+    try {
+      const results = await Promise.all(
+        updates.map(async (update) => {
+          const res = await fetch(
+            `/api/guru/tugas/${update.tugasId}/pengumpulan/${update.pengumpulanId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ nilai: update.nilai }),
+            }
+          );
+          return { ...update, ok: res.ok };
+        })
+      );
+      const savedIds = new Set(results.filter((result) => result.ok).map((result) => result.pengumpulanId));
+      const failedCount = results.length - savedIds.size;
+
+      if (savedIds.size > 0) {
+        setRekap((current) => current.map((row) => {
+          const nilai = { ...row.nilai };
+          for (const result of results) {
+            if (!result.ok) continue;
+            const key = `tugas:${result.tugasId}`;
+            if (nilai[key]?.pengumpulanId === result.pengumpulanId) {
+              nilai[key] = { ...nilai[key], nilaiTotal: result.nilai, status: "sudah_dinilai" };
+            }
+          }
+          return { ...row, nilai };
+        }));
+        setNilaiTugasDraft((current) => Object.fromEntries(
+          Object.entries(current).filter(([pengumpulanId]) => !savedIds.has(pengumpulanId))
+        ));
+        setSaveTugasMessage(`${savedIds.size} nilai tugas berhasil disimpan.`);
+      }
+      if (failedCount > 0) setSaveTugasError(`${failedCount} nilai gagal disimpan. Coba simpan kembali.`);
+    } catch {
+      setSaveTugasError("Tidak dapat terhubung ke server untuk menyimpan nilai tugas.");
+    } finally {
+      setSavingTugas(false);
+    }
   }
 
   async function handleDownloadExcel() {
@@ -109,17 +185,17 @@ export default function NilaiPage() {
             PORTAL GURU
           </span>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Generate Nilai
+            Rekap Nilai
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Rekap nilai asesmen per mapel dan kelas.
+            Nilai asesmen terisi otomatis; masukkan nilai tugas untuk siswa yang sudah mengumpulkan.
           </p>
         </div>
       </section>
 
       {tidakBisaLihat && !loadingMe && (
         <div className="mb-6 rounded-2xl border border-[#3d6687]/10 bg-[#4b7899]/10 px-4 py-3 text-sm text-[#3d6687]">
-          Kamu belum di-assign ke mapel atau kelas apapun. Hubungi admin untuk di-assign dulu.
+            Akun Anda belum memiliki penugasan mata pelajaran atau kelas. Hubungi administrator sekolah.
         </div>
       )}
 
@@ -171,13 +247,23 @@ export default function NilaiPage() {
                 <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
                   {rekap.length} Siswa
                 </span>
+                {Object.keys(nilaiTugasDraft).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleSimpanNilaiTugas}
+                    disabled={savingTugas}
+                    className="rounded-xl bg-[#3d6687] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#2f5573] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {savingTugas ? "Menyimpan..." : `Simpan ${Object.keys(nilaiTugasDraft).length} Nilai Tugas`}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleDownloadExcel}
                   disabled={loadingRekap || (asesmenList.length === 0 && tugasList.length === 0)}
                   className="rounded-xl border border-[#3d6687]/20 px-4 py-2 text-sm font-bold text-[#3d6687] transition hover:bg-[#3d6687]/5 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {downloadingExcel ? "Mengunduh..." : "Download Excel"}
+                  {downloadingExcel ? "Mengunduh..." : "Unduh Excel"}
                 </button>
               </div>
             </div>
@@ -250,9 +336,29 @@ export default function NilaiPage() {
                             const n = row.nilai[`tugas:${t._id}`];
                             return (
                               <td key={`tugas:${t._id}`} className="px-4 py-3 text-[#1d3345]/70">
-                                {n?.nilaiTotal !== null && n?.nilaiTotal !== undefined
-                                  ? n.nilaiTotal
-                                  : n ? "Belum dinilai" : "-"}
+                                {n?.pengumpulanId ? (
+                                  <div className="min-w-24">
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      max={100}
+                                      aria-label={`Nilai ${t.judul} untuk ${row.siswa.name}`}
+                                      value={nilaiTugasDraft[n.pengumpulanId]?.nilai ?? n.nilaiTotal ?? ""}
+                                      onChange={(e) => {
+                                        setSaveTugasMessage(null);
+                                        setSaveTugasError(null);
+                                        setNilaiTugasDraft((current) => ({
+                                          ...current,
+                                          [n.pengumpulanId!]: { tugasId: t._id, nilai: e.target.value },
+                                        }));
+                                      }}
+                                      className="w-20 rounded-lg border border-[#3d6687]/15 bg-white px-2 py-1.5 text-sm font-semibold outline-none focus:border-[#4b7899] focus:ring-2 focus:ring-[#4b7899]/10"
+                                    />
+                                    <p className="mt-1 whitespace-nowrap text-[10px] text-[#1d3345]/45">
+                                      {n.status === "sudah_dinilai" ? "Sudah dinilai" : "Belum dinilai"}
+                                    </p>
+                                  </div>
+                                ) : "-"}
                               </td>
                             );
                           })}
@@ -266,6 +372,8 @@ export default function NilaiPage() {
                   </p>
                 </div>
               )}
+              {saveTugasMessage && <p className="mt-3 text-sm font-semibold text-emerald-700">{saveTugasMessage}</p>}
+              {saveTugasError && <p className="mt-3 text-sm text-red-600">{saveTugasError}</p>}
               {downloadError && <p className="mt-3 text-sm text-red-600">{downloadError}</p>}
             </div>
           </section>
