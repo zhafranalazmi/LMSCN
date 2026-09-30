@@ -35,6 +35,10 @@ export default function GuruPage() {
   const [searchKelas, setSearchKelas] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+  const [importingExcel, setImportingExcel] = useState(false);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const [editTarget, setEditTarget] = useState<Guru | null>(null);
   const [editName, setEditName] = useState("");
@@ -139,6 +143,52 @@ export default function GuruPage() {
     loadData();
   }
 
+  async function handleExcelImport(e: FormEvent) {
+    e.preventDefault();
+    if (!excelFile) return;
+
+    setImportingExcel(true);
+    setImportMessage(null);
+    setImportError(null);
+    const formData = new FormData();
+    formData.append("file", excelFile);
+
+    try {
+      const res = await fetch("/api/admin/guru/import", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        const rowErrors = data.errors?.map(
+          (item: { row: number; message: string }) => `Baris ${item.row}: ${item.message}`
+        );
+        setImportError(
+          [data.message ?? "Gagal mengimpor data guru", ...(rowErrors ?? [])].join("\n")
+        );
+        return;
+      }
+
+      setImportMessage(
+        `${data.imported} guru berhasil ditambahkan${data.errors?.length ? `; ${data.errors.length} baris dilewati` : ""}.`
+      );
+      setImportError(
+        data.errors?.length
+          ? data.errors.map((item: { row: number; message: string }) => `Baris ${item.row}: ${item.message}`).join("\n")
+          : null
+      );
+      setExcelFile(null);
+      const input = document.getElementById("guru-excel-file") as HTMLInputElement | null;
+      if (input) input.value = "";
+      loadData();
+    } catch {
+      setImportError("Tidak dapat terhubung ke server untuk mengimpor file.");
+    } finally {
+      setImportingExcel(false);
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("Hapus guru ini?")) return;
     await fetch(`/api/admin/guru/${id}`, { method: "DELETE" });
@@ -202,6 +252,48 @@ export default function GuruPage() {
             Kelola data guru, mata pelajaran, dan kelas yang diampu.
           </p>
         </div>
+      </section>
+
+      <section className="mb-6 rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mb-4">
+          <h2 className="text-base font-bold text-[#1d3345]">Impor Guru dari Excel</h2>
+          <p className="mt-1 text-sm text-[#1d3345]/55">
+            Gunakan template dengan kolom Nama, Email, Password, Mapel, dan Kelas Diampu. Pisahkan beberapa mapel atau kelas dengan koma.
+          </p>
+        </div>
+        <form onSubmit={handleExcelImport} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <input
+            id="guru-excel-file"
+            type="file"
+            accept=".xlsx"
+            onChange={(e) => setExcelFile(e.target.files?.[0] ?? null)}
+            className="sr-only"
+          />
+          <div className="flex flex-wrap gap-2">
+            <label
+              htmlFor="guru-excel-file"
+              className="cursor-pointer rounded-xl border border-[#3d6687]/20 px-4 py-2.5 text-sm font-bold text-[#3d6687] transition hover:bg-[#3d6687]/5"
+            >
+              Pilih File Excel
+            </label>
+            <a
+              href="/api/admin/guru/import"
+              className="rounded-xl border border-[#3d6687]/20 px-4 py-2.5 text-sm font-bold text-[#3d6687] transition hover:bg-[#3d6687]/5"
+            >
+              Unduh Template
+            </a>
+            <button
+              type="submit"
+              disabled={!excelFile || importingExcel}
+              className="rounded-xl bg-[#3d6687] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#2f5573] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {importingExcel ? "Mengimpor..." : "Masukkan Excel"}
+            </button>
+          </div>
+        </form>
+        {excelFile && <p className="mt-2 text-xs text-[#1d3345]/60">File dipilih: {excelFile.name}</p>}
+        {importMessage && <p className="mt-3 whitespace-pre-line text-sm font-semibold text-emerald-700">{importMessage}</p>}
+        {importError && <p className="mt-2 whitespace-pre-line text-sm text-red-600">{importError}</p>}
       </section>
 
       {/* Form Tambah Guru */}

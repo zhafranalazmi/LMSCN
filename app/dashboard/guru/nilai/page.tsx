@@ -8,8 +8,8 @@ interface AsesmenRingkas {
 }
 
 interface NilaiItem {
-  nilaiTotal: number;
-  status: "menunggu_penilaian" | "selesai";
+  nilaiTotal: number | null;
+  status: string;
 }
 
 interface RekapSiswa {
@@ -24,9 +24,12 @@ export default function NilaiPage() {
   const [kelas, setKelas] = useState("");
 
   const [asesmenList, setAsesmenList] = useState<AsesmenRingkas[]>([]);
+  const [tugasList, setTugasList] = useState<AsesmenRingkas[]>([]);
   const [rekap, setRekap] = useState<RekapSiswa[]>([]);
   const [loadingMe, setLoadingMe] = useState(true);
   const [loadingRekap, setLoadingRekap] = useState(false);
+  const [downloadingExcel, setDownloadingExcel] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadMe() {
@@ -55,6 +58,7 @@ export default function NilaiPage() {
       const res = await fetch(`/api/guru/nilai?mapel=${encodeURIComponent(mapel)}&kelas=${encodeURIComponent(kelas)}`);
       const data = await res.json();
       setAsesmenList(Array.isArray(data.asesmenList) ? data.asesmenList : []);
+      setTugasList(Array.isArray(data.tugasList) ? data.tugasList : []);
       setRekap(Array.isArray(data.rekap) ? data.rekap : []);
       setLoadingRekap(false);
     }
@@ -62,12 +66,36 @@ export default function NilaiPage() {
   }, [mapel, kelas]);
 
   function rataRata(row: RekapSiswa) {
-    const nilaiValid = asesmenList
-      .map((a) => row.nilai[a._id])
-      .filter((n): n is NilaiItem => n !== null && n !== undefined);
+    const nilaiValid = [...asesmenList.map((item) => `asesmen:${item._id}`), ...tugasList.map((item) => `tugas:${item._id}`)]
+      .map((key) => row.nilai[key])
+      .filter((item): item is NilaiItem => item !== null && item !== undefined && item.nilaiTotal !== null);
     if (nilaiValid.length === 0) return "-";
     const total = nilaiValid.reduce((sum, n) => sum + n.nilaiTotal, 0);
     return (total / nilaiValid.length).toFixed(1);
+  }
+
+  async function handleDownloadExcel() {
+    setDownloadingExcel(true);
+    setDownloadError(null);
+    try {
+      const params = new URLSearchParams({ mapel, kelas, format: "excel" });
+      const res = await fetch(`/api/guru/nilai?${params.toString()}`);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message ?? "Gagal mengunduh rekap nilai");
+      }
+
+      const url = URL.createObjectURL(await res.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Rekap_Nilai_${mapel}_${kelas}`.replace(/[^\\w-]+/g, "_") + ".xlsx";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : "Gagal mengunduh rekap nilai");
+    } finally {
+      setDownloadingExcel(false);
+    }
   }
 
   const tidakBisaLihat = mapelSaya.length === 0 || kelasSaya.length === 0;
@@ -139,9 +167,19 @@ export default function NilaiPage() {
                 <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">Rekap Nilai</p>
                 <h2 className="mt-1 text-lg font-bold text-[#1d3345]">{mapel} · {kelas}</h2>
               </div>
-              <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
-                {rekap.length} Siswa
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="w-fit rounded-full bg-[#3d6687] px-3 py-1.5 text-xs font-bold text-white">
+                  {rekap.length} Siswa
+                </span>
+                <button
+                  type="button"
+                  onClick={handleDownloadExcel}
+                  disabled={loadingRekap || (asesmenList.length === 0 && tugasList.length === 0)}
+                  className="rounded-xl border border-[#3d6687]/20 px-4 py-2 text-sm font-bold text-[#3d6687] transition hover:bg-[#3d6687]/5 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {downloadingExcel ? "Mengunduh..." : "Download Excel"}
+                </button>
+              </div>
             </div>
 
             <div className="p-5 sm:p-6">
@@ -152,30 +190,33 @@ export default function NilaiPage() {
                 </div>
               )}
 
-              {!loadingRekap && asesmenList.length === 0 && (
+              {!loadingRekap && asesmenList.length === 0 && tugasList.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] px-4 py-8 text-center">
                   <p className="text-sm font-medium text-[#1d3345]/50">
-                    Belum ada asesmen untuk kombinasi mapel dan kelas ini.
+                    Belum ada asesmen atau tugas untuk kombinasi mapel dan kelas ini.
                   </p>
                 </div>
               )}
 
-              {!loadingRekap && asesmenList.length > 0 && rekap.length === 0 && (
+              {!loadingRekap && (asesmenList.length > 0 || tugasList.length > 0) && rekap.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-[#3d6687]/20 bg-[#f8fafb] px-4 py-8 text-center">
                   <p className="text-sm font-medium text-[#1d3345]/50">
-                    Belum ada siswa yang mengerjakan asesmen ini.
+                    Belum ada siswa di kelas ini.
                   </p>
                 </div>
               )}
 
-              {!loadingRekap && asesmenList.length > 0 && rekap.length > 0 && (
+              {!loadingRekap && (asesmenList.length > 0 || tugasList.length > 0) && rekap.length > 0 && (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-[#c3c4c0]/20 text-left text-xs uppercase tracking-wider text-[#1d3345]/55">
                       <tr>
                         <th className="px-4 py-3 font-bold sticky left-0 bg-[#c3c4c0]/20">Nama</th>
                         {asesmenList.map((a) => (
-                          <th key={a._id} className="px-4 py-3 font-bold whitespace-nowrap">{a.judul}</th>
+                          <th key={`asesmen:${a._id}`} className="px-4 py-3 font-bold whitespace-nowrap">Asesmen · {a.judul}</th>
+                        ))}
+                        {tugasList.map((t) => (
+                          <th key={`tugas:${t._id}`} className="px-4 py-3 font-bold whitespace-nowrap">Tugas · {t.judul}</th>
                         ))}
                         <th className="px-4 py-3 font-bold whitespace-nowrap">Rata-rata</th>
                       </tr>
@@ -187,10 +228,10 @@ export default function NilaiPage() {
                             {row.siswa.name}
                           </td>
                           {asesmenList.map((a) => {
-                            const n = row.nilai[a._id];
+                            const n = row.nilai[`asesmen:${a._id}`];
                             return (
-                              <td key={a._id} className="px-4 py-3 text-[#1d3345]/70">
-                                {n ? (
+                              <td key={`asesmen:${a._id}`} className="px-4 py-3 text-[#1d3345]/70">
+                                {n && n.nilaiTotal !== null ? (
                                   <span
                                     className={
                                       n.status === "menunggu_penilaian"
@@ -201,9 +242,17 @@ export default function NilaiPage() {
                                     {n.nilaiTotal}
                                     {n.status === "menunggu_penilaian" && " *"}
                                   </span>
-                                ) : (
-                                  "-"
-                                )}
+                                ) : n ? "Menunggu nilai" : "-"}
+                              </td>
+                            );
+                          })}
+                          {tugasList.map((t) => {
+                            const n = row.nilai[`tugas:${t._id}`];
+                            return (
+                              <td key={`tugas:${t._id}`} className="px-4 py-3 text-[#1d3345]/70">
+                                {n?.nilaiTotal !== null && n?.nilaiTotal !== undefined
+                                  ? n.nilaiTotal
+                                  : n ? "Belum dinilai" : "-"}
                               </td>
                             );
                           })}
@@ -213,10 +262,11 @@ export default function NilaiPage() {
                     </tbody>
                   </table>
                   <p className="mt-3 text-xs text-[#1d3345]/40">
-                    * Nilai masih sementara, ada esai yang belum dinilai.
+                    * Nilai asesmen masih sementara jika ada esai yang belum dinilai.
                   </p>
                 </div>
               )}
+              {downloadError && <p className="mt-3 text-sm text-red-600">{downloadError}</p>}
             </div>
           </section>
         </>

@@ -4,6 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Mapel from "@/models/Mapel";
 
+function normalizeNama(nama: string) {
+  return nama.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("id-ID");
+}
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session || (session.user as any).role !== "admin") {
@@ -30,11 +34,15 @@ export async function POST(req: Request) {
 
   await connectDB();
 
-  const existing = await Mapel.findOne({ nama: nama.trim() });
-  if (existing) {
-    return NextResponse.json({ message: "Mapel sudah ada" }, { status: 400 });
+  const namaBersih = nama.normalize("NFKC").trim().replace(/\s+/g, " ");
+  const existingNames = await Mapel.find().select("nama").lean();
+  if (existingNames.some((item) => normalizeNama(item.nama) === normalizeNama(namaBersih))) {
+    return NextResponse.json(
+      { message: "Mapel sudah ada dengan penulisan yang sama" },
+      { status: 400 }
+    );
   }
 
-  const mapel = await Mapel.create({ nama: nama.trim() });
+  const mapel = await Mapel.create({ nama: namaBersih });
   return NextResponse.json(mapel, { status: 201 });
 }
