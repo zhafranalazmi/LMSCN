@@ -6,7 +6,7 @@ const MateriSchema = new Schema(
     deskripsi: { type: String, default: "" },
     mapel: { type: String, required: true },
     kelas: { type: String, required: true },
-    // "link" = guru paste URL (Google Drive dll), "pdf" = file diunggah ke Cloudinary
+    // "link" = guru paste URL (Google Drive dll), "pdf" = file diunggah ke GridFS MongoDB
     tipeLampiran: { type: String, enum: ["link", "pdf"], required: true },
     lampiranUrl: { type: String, required: true },
     guru: { type: Schema.Types.ObjectId, ref: "Guru", required: true },

@@ -26,7 +26,7 @@
 
 - Buka halaman utama dan pastikan aplikasi tersedia.
 - Coba login menggunakan akun yang sudah tersimpan di MongoDB.
-- Coba upload file melalui Cloudinary.
+- Coba upload PDF melalui halaman materi atau tugas.
 - Periksa log Vercel jika terjadi error pada API atau koneksi database.
 
-> Pastikan variabel `NEXTAUTH_SECRET` dan `MONGODB_URI` tidak pernah menjadi nilai kosong atau ditempatkan sebagai public setting.
+> Gunakan MongoDB Atlas atau MongoDB Community yang dapat diakses dari Vercel. Pastikan variabel `NEXTAUTH_SECRET` dan `MONGODB_URI` tidak pernah menjadi nilai kosong atau ditempatkan sebagai public setting.

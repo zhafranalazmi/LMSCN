@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import cloudinary from "@/lib/cloudinary";
+import { storeUploadedFile } from "@/lib/gridfs";
 
 export const runtime = "nodejs";
 
@@ -23,19 +23,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Ukuran PDF maksimal 10 MB" }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const base64 = `data:application/pdf;base64,${buffer.toString("base64")}`;
-
   try {
-    const result = await cloudinary.uploader.upload(base64, {
-      resource_type: "raw",
-      folder: "tugas",
-      public_id: `${Date.now()}-${file.name.replace(/\.pdf$/i, "")}`,
-      format: "pdf",
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const storedFile = await storeUploadedFile(
+      buffer,
+      file.name,
+      "application/pdf",
+      (session.user as any).id,
+      "siswa"
+    );
+
+    return NextResponse.json({
+      url: `/api/files/${storedFile.id.toString()}`,
+      fileId: storedFile.id.toString(),
     });
-    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
-    console.error(error);
+    console.error("Gagal menyimpan PDF ke MongoDB:", error);
     return NextResponse.json({ message: "Gagal mengunggah PDF ke penyimpanan" }, { status: 500 });
   }
 }
