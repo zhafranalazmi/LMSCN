@@ -8,6 +8,12 @@ interface Guru {
   email: string;
   mapel: string[];
   kelasDiampu: string[];
+  pengajaran?: Pengajaran[];
+}
+
+interface Pengajaran {
+  mapel: string;
+  kelas: string[];
 }
 
 interface Mapel {
@@ -20,6 +26,143 @@ interface Kelas {
   nama: string;
 }
 
+function AssignmentSelector({
+  mapelList,
+  kelasList,
+  value,
+  onChange,
+  search,
+  onSearchChange,
+}: {
+  mapelList: Mapel[];
+  kelasList: Kelas[];
+  value: Pengajaran[];
+  onChange: (next: Pengajaran[]) => void;
+  search: string;
+  onSearchChange: (next: string) => void;
+}) {
+  const [kelasSearch, setKelasSearch] = useState("");
+  const [mapelAktif, setMapelAktif] = useState("");
+  const filteredMapel = mapelList.filter((item) =>
+    item.nama.toLowerCase().includes(search.toLowerCase())
+  );
+  const filteredKelas = kelasList.filter((item) =>
+    item.nama.toLowerCase().includes(kelasSearch.toLowerCase())
+  );
+  const mapelTerpilih = value.find((item) => item.mapel === mapelAktif) ?? value[0];
+
+  function setMapel(nama: string, checked: boolean) {
+    if (checked) {
+      onChange([...value, { mapel: nama, kelas: [] }]);
+      setMapelAktif(nama);
+    } else {
+      onChange(value.filter((item) => item.mapel !== nama));
+    }
+  }
+
+  function setKelas(mapel: string, kelas: string, checked: boolean) {
+    onChange(
+      value.map((item) =>
+        item.mapel === mapel
+          ? {
+              ...item,
+              kelas: checked
+                ? [...item.kelas, kelas]
+                : item.kelas.filter((nama) => nama !== kelas),
+            }
+          : item
+      )
+    );
+  }
+
+  useEffect(() => {
+    if (!value.some((item) => item.mapel === mapelAktif)) {
+      setMapelAktif(value[0]?.mapel ?? "");
+    }
+  }, [mapelAktif, value]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={search}
+        onChange={(event) => onSearchChange(event.target.value)}
+        placeholder="Cari mata pelajaran..."
+        className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+      />
+      <div className="max-h-36 space-y-2 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
+        {filteredMapel.length === 0 && (
+          <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
+        )}
+        {filteredMapel.map((item) => {
+          const assignment = value.find((entry) => entry.mapel === item.nama);
+          return (
+            <label key={item._id} className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#3d6687]/10 bg-white p-3 text-sm font-bold text-[#1d3345]">
+                <input
+                  type="checkbox"
+                  checked={!!assignment}
+                  onChange={(event) => setMapel(item.nama, event.target.checked)}
+                  className="accent-[#3d6687]"
+                />
+                {item.nama}
+            </label>
+          );
+        })}
+      </div>
+      <div className="mt-4">
+        <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+          Atur Kelas untuk Mapel
+        </label>
+        <select
+          value={mapelTerpilih?.mapel ?? ""}
+          onChange={(event) => setMapelAktif(event.target.value)}
+          disabled={value.length === 0}
+          className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none focus:border-[#4b7899] disabled:opacity-60"
+        >
+          {value.length === 0 && <option value="">Pilih mapel terlebih dahulu</option>}
+          {value.map((item) => (
+            <option key={item.mapel} value={item.mapel}>
+              {item.mapel} ({item.kelas.length} kelas)
+            </option>
+          ))}
+        </select>
+        {mapelTerpilih && (
+          <>
+            <input
+              type="text"
+              value={kelasSearch}
+              onChange={(event) => setKelasSearch(event.target.value)}
+              placeholder="Cari kelas..."
+              className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none focus:border-[#4b7899]"
+            />
+            <div className="max-h-44 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
+              {kelasList.length === 0 ? (
+                <p className="text-sm text-[#1d3345]/50">Belum ada kelas.</p>
+              ) : filteredKelas.length === 0 ? (
+                <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
+              ) : (
+                <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {filteredKelas.map((kelas) => (
+                    <label key={kelas._id} className="flex cursor-pointer items-center gap-2 text-sm text-[#1d3345]/75">
+                      <input
+                        type="checkbox"
+                        checked={mapelTerpilih.kelas.includes(kelas.nama)}
+                        onChange={(event) => setKelas(mapelTerpilih.mapel, kelas.nama, event.target.checked)}
+                        className="accent-[#3d6687]"
+                      />
+                      {kelas.nama}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function GuruPage() {
   const [guruList, setGuruList] = useState<Guru[]>([]);
   const [mapelList, setMapelList] = useState<Mapel[]>([]);
@@ -29,10 +172,8 @@ export default function GuruPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedMapel, setSelectedMapel] = useState<string[]>([]);
-  const [selectedKelas, setSelectedKelas] = useState<string[]>([]);
+  const [selectedPengajaran, setSelectedPengajaran] = useState<Pengajaran[]>([]);
   const [searchMapel, setSearchMapel] = useState("");
-  const [searchKelas, setSearchKelas] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
@@ -44,10 +185,8 @@ export default function GuruPage() {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [editMapel, setEditMapel] = useState<string[]>([]);
-  const [editKelas, setEditKelas] = useState<string[]>([]);
+  const [editPengajaran, setEditPengajaran] = useState<Pengajaran[]>([]);
   const [editSearchMapel, setEditSearchMapel] = useState("");
-  const [editSearchKelas, setEditSearchKelas] = useState("");
   const [editError, setEditError] = useState<string | null>(null);
   const [editSubmitting, setEditSubmitting] = useState(false);
 
@@ -71,43 +210,6 @@ export default function GuruPage() {
     loadData();
   }, []);
 
-  function toggleSelectedMapel(nama: string) {
-    setSelectedMapel((prev) =>
-      prev.includes(nama) ? prev.filter((m) => m !== nama) : [...prev, nama]
-    );
-  }
-
-  function toggleSelectedKelas(nama: string) {
-    setSelectedKelas((prev) =>
-      prev.includes(nama) ? prev.filter((k) => k !== nama) : [...prev, nama]
-    );
-  }
-
-  function toggleEditMapel(nama: string) {
-    setEditMapel((prev) =>
-      prev.includes(nama) ? prev.filter((m) => m !== nama) : [...prev, nama]
-    );
-  }
-
-  function toggleEditKelas(nama: string) {
-    setEditKelas((prev) =>
-      prev.includes(nama) ? prev.filter((k) => k !== nama) : [...prev, nama]
-    );
-  }
-
-  const filteredMapelForAdd = mapelList.filter((m) =>
-    m.nama.toLowerCase().includes(searchMapel.toLowerCase())
-  );
-  const filteredKelasForAdd = kelasList.filter((k) =>
-    k.nama.toLowerCase().includes(searchKelas.toLowerCase())
-  );
-  const filteredMapelForEdit = mapelList.filter((m) =>
-    m.nama.toLowerCase().includes(editSearchMapel.toLowerCase())
-  );
-  const filteredKelasForEdit = kelasList.filter((k) =>
-    k.nama.toLowerCase().includes(editSearchKelas.toLowerCase())
-  );
-
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -120,8 +222,7 @@ export default function GuruPage() {
         name,
         email,
         password,
-        mapel: selectedMapel,
-        kelasDiampu: selectedKelas,
+        pengajaran: selectedPengajaran,
       }),
     });
 
@@ -136,10 +237,8 @@ export default function GuruPage() {
     setName("");
     setEmail("");
     setPassword("");
-    setSelectedMapel([]);
-    setSelectedKelas([]);
+    setSelectedPengajaran([]);
     setSearchMapel("");
-    setSearchKelas("");
     loadData();
   }
 
@@ -200,10 +299,10 @@ export default function GuruPage() {
     setEditName(g.name);
     setEditEmail(g.email);
     setEditPassword("");
-    setEditMapel(g.mapel ?? []);
-    setEditKelas(g.kelasDiampu ?? []);
+    setEditPengajaran(
+      g.pengajaran ?? (g.mapel ?? []).map((mapel) => ({ mapel, kelas: g.kelasDiampu ?? [] }))
+    );
     setEditSearchMapel("");
-    setEditSearchKelas("");
     setEditError(null);
   }
 
@@ -220,8 +319,7 @@ export default function GuruPage() {
         name: editName,
         email: editEmail,
         password: editPassword || undefined,
-        mapel: editMapel,
-        kelasDiampu: editKelas,
+        pengajaran: editPengajaran,
       }),
     });
 
@@ -349,124 +447,32 @@ export default function GuruPage() {
             </div>
           </div>
 
-          <div className="mb-4 grid gap-4 sm:grid-cols-2">
-            {/* Pilih Mapel */}
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className="block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
-                  Mata Pelajaran
-                </label>
-                {selectedMapel.length > 0 && (
-                  <span className="text-xs font-bold text-[#3d6687]">
-                    {selectedMapel.length} dipilih
-                  </span>
-                )}
-              </div>
-
-              {mapelList.length === 0 ? (
-                <p className="text-sm text-[#1d3345]/55">
-                  Belum ada mapel. Tambahkan dulu di halaman{" "}
-                  <a href="/dashboard/admin/mapel" className="font-semibold text-[#3d6687] underline">
-                    Manajemen Mapel
-                  </a>
-                  .
-                </p>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    value={searchMapel}
-                    onChange={(e) => setSearchMapel(e.target.value)}
-                    placeholder="Cari mata pelajaran..."
-                    className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
-                  />
-                  <div className="max-h-48 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
-                    <div className="flex flex-wrap gap-2">
-                      {filteredMapelForAdd.length === 0 && (
-                        <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
-                      )}
-                      {filteredMapelForAdd.map((m) => (
-                        <label
-                          key={m._id}
-                          className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
-                            selectedMapel.includes(m.nama)
-                              ? "border-[#3d6687] bg-[#3d6687] text-white shadow-sm"
-                              : "border-[#3d6687]/10 bg-white text-[#1d3345]/65 hover:border-[#4b7899]/40 hover:bg-[#4b7899]/10 hover:text-[#3d6687]"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedMapel.includes(m.nama)}
-                            onChange={() => toggleSelectedMapel(m.nama)}
-                            className="hidden"
-                          />
-                          {m.nama}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
+          <div className="mb-4">
+            <div className="mb-2 flex items-center justify-between">
+              <label className="block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                Mapel dan Kelas yang Diampu
+              </label>
+              <span className="text-xs font-bold text-[#3d6687]">
+                {selectedPengajaran.length} mapel dipilih
+              </span>
             </div>
-
-            {/* Pilih Kelas Diampu */}
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className="block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
-                  Kelas yang Diampu
-                </label>
-                {selectedKelas.length > 0 && (
-                  <span className="text-xs font-bold text-[#3d6687]">
-                    {selectedKelas.length} dipilih
-                  </span>
-                )}
-              </div>
-
-              {kelasList.length === 0 ? (
-                <p className="text-sm text-[#1d3345]/55">
-                  Belum ada kelas. Tambahkan dulu di halaman{" "}
-                  <a href="/dashboard/admin/kelas" className="font-semibold text-[#3d6687] underline">
-                    Manajemen Kelas
-                  </a>
-                  .
-                </p>
-              ) : (
-                <>
-                  <input
-                    type="text"
-                    value={searchKelas}
-                    onChange={(e) => setSearchKelas(e.target.value)}
-                    placeholder="Cari kelas..."
-                    className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
-                  />
-                  <div className="max-h-48 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
-                    <div className="flex flex-wrap gap-2">
-                      {filteredKelasForAdd.length === 0 && (
-                        <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
-                      )}
-                      {filteredKelasForAdd.map((k) => (
-                        <label
-                          key={k._id}
-                          className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
-                            selectedKelas.includes(k.nama)
-                              ? "border-[#3d6687] bg-[#3d6687] text-white shadow-sm"
-                              : "border-[#3d6687]/10 bg-white text-[#1d3345]/65 hover:border-[#4b7899]/40 hover:bg-[#4b7899]/10 hover:text-[#3d6687]"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedKelas.includes(k.nama)}
-                            onChange={() => toggleSelectedKelas(k.nama)}
-                            className="hidden"
-                          />
-                          {k.nama}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            {mapelList.length === 0 ? (
+              <p className="text-sm text-[#1d3345]/55">
+                Belum ada mapel. Tambahkan dulu di halaman{" "}
+                <a href="/dashboard/admin/mapel" className="font-semibold text-[#3d6687] underline">
+                  Manajemen Mapel
+                </a>.
+              </p>
+            ) : (
+              <AssignmentSelector
+                mapelList={mapelList}
+                kelasList={kelasList}
+                value={selectedPengajaran}
+                onChange={setSelectedPengajaran}
+                search={searchMapel}
+                onSearchChange={setSearchMapel}
+              />
+            )}
           </div>
 
           <button
@@ -531,7 +537,9 @@ export default function GuruPage() {
                   <td className="px-6 py-4 font-semibold text-[#1d3345]">{g.name}</td>
                   <td className="px-6 py-4 text-[#1d3345]/60">{g.email}</td>
                   <td className="px-6 py-4 text-[#1d3345]/60">
-                    {g.mapel && g.mapel.length > 0 ? g.mapel.join(", ") : "-"}
+                    {g.pengajaran?.length
+                      ? g.pengajaran.map((item) => `${item.mapel} (${item.kelas.join(", ") || "belum ada kelas"})`).join("; ")
+                      : g.mapel?.join(", ") || "-"}
                   </td>
                   <td className="px-6 py-4 text-[#1d3345]/60">
                     {g.kelasDiampu && g.kelasDiampu.length > 0 ? g.kelasDiampu.join(", ") : "-"}
@@ -608,93 +616,17 @@ export default function GuruPage() {
               </div>
 
               <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
-                    Mata Pelajaran
-                  </label>
-                  {editMapel.length > 0 && (
-                    <span className="text-xs font-bold text-[#3d6687]">
-                      {editMapel.length} dipilih
-                    </span>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  value={editSearchMapel}
-                  onChange={(e) => setEditSearchMapel(e.target.value)}
-                  placeholder="Cari mata pelajaran..."
-                  className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
+                  Mapel dan Kelas yang Diampu
+                </label>
+                <AssignmentSelector
+                  mapelList={mapelList}
+                  kelasList={kelasList}
+                  value={editPengajaran}
+                  onChange={setEditPengajaran}
+                  search={editSearchMapel}
+                  onSearchChange={setEditSearchMapel}
                 />
-                <div className="max-h-40 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
-                  <div className="flex flex-wrap gap-2">
-                    {filteredMapelForEdit.length === 0 && (
-                      <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
-                    )}
-                    {filteredMapelForEdit.map((m) => (
-                      <label
-                        key={m._id}
-                        className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
-                          editMapel.includes(m.nama)
-                            ? "border-[#3d6687] bg-[#3d6687] text-white shadow-sm"
-                            : "border-[#3d6687]/10 bg-white text-[#1d3345]/65 hover:border-[#4b7899]/40 hover:bg-[#4b7899]/10 hover:text-[#3d6687]"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={editMapel.includes(m.nama)}
-                          onChange={() => toggleEditMapel(m.nama)}
-                          className="hidden"
-                        />
-                        {m.nama}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wide text-[#1d3345]/60">
-                    Kelas yang Diampu
-                  </label>
-                  {editKelas.length > 0 && (
-                    <span className="text-xs font-bold text-[#3d6687]">
-                      {editKelas.length} dipilih
-                    </span>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  value={editSearchKelas}
-                  onChange={(e) => setEditSearchKelas(e.target.value)}
-                  placeholder="Cari kelas..."
-                  className="mb-2 w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
-                />
-                <div className="max-h-40 overflow-y-auto rounded-xl border border-[#3d6687]/10 bg-[#f8fafb] p-3">
-                  <div className="flex flex-wrap gap-2">
-                    {filteredKelasForEdit.length === 0 && (
-                      <p className="text-sm text-[#1d3345]/50">Tidak ditemukan.</p>
-                    )}
-                    {filteredKelasForEdit.map((k) => (
-                      <label
-                        key={k._id}
-                        className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
-                          editKelas.includes(k.nama)
-                            ? "border-[#3d6687] bg-[#3d6687] text-white shadow-sm"
-                            : "border-[#3d6687]/10 bg-white text-[#1d3345]/65 hover:border-[#4b7899]/40 hover:bg-[#4b7899]/10 hover:text-[#3d6687]"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={editKelas.includes(k.nama)}
-                          onChange={() => toggleEditKelas(k.nama)}
-                          className="hidden"
-                        />
-                        {k.nama}
-                      </label>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {editError && (

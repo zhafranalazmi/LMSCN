@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import ExcelJS from "exceljs";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { guruMengajar } from "@/lib/pengajaranGuru";
 import Asesmen from "@/models/Asesmen";
 import JawabanSiswa from "@/models/JawabanSiswa";
 import Tugas from "@/models/Tugas";
@@ -29,9 +30,9 @@ export async function GET(req: Request) {
   await connectDB();
 
   const guru = await Guru.findById((session.user as any).id)
-    .select("mapel kelasDiampu")
-    .lean<{ mapel: string[]; kelasDiampu: string[] }>();
-  if (!guru?.mapel?.includes(mapel) || !guru?.kelasDiampu?.includes(kelas)) {
+    .select("mapel kelasDiampu pengajaran")
+    .lean<{ mapel: string[]; kelasDiampu: string[]; pengajaran?: { mapel: string; kelas: string[] }[] }>();
+  if (!guru || !guruMengajar(guru, mapel, kelas)) {
     return NextResponse.json({ message: "Kamu tidak di-assign ke mapel atau kelas ini" }, { status: 403 });
   }
 

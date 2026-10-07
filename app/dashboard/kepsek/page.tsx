@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function KepsekDashboard() {
   const menu = [
-    { title: "Data Guru", desc: "Tinjau data dan aktivitas guru", icon: "👩‍🏫", href: "/dashboard/kepsek/guru" },
     { title: "Rekap Nilai", desc: "Tinjau dan unduh nilai per mata pelajaran", icon: "📊", href: "/dashboard/kepsek/nilai" },
+    { title: "Unduh Data", desc: "Unduh data siswa dan guru dengan filter", icon: "📥", href: "/dashboard/kepsek/unduh-data" },
   ];
 
   return (

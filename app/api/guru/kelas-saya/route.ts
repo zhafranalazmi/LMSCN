@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { daftarKelasPengajaran } from "@/lib/pengajaranGuru";
 import Guru from "@/models/Guru";
 
 export async function GET() {
@@ -11,11 +12,11 @@ export async function GET() {
   }
 
   await connectDB();
-  const guru = await Guru.findById((session.user as any).id).select("kelasDiampu");
+  const guru = await Guru.findById((session.user as any).id).select("mapel kelasDiampu pengajaran");
 
   if (!guru) {
     return NextResponse.json({ message: "Guru tidak ditemukan" }, { status: 404 });
   }
 
-  return NextResponse.json({ kelasDiampu: guru.kelasDiampu ?? [] });
+  return NextResponse.json({ kelasDiampu: daftarKelasPengajaran(guru) });
 }

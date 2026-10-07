@@ -69,7 +69,7 @@ export default function LoginPage() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-4 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-4 text-ink placeholder:text-ink/40 outline-none focus:border-navy-500"
           placeholder="nama@citranegara.sch.id"
         />
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-6 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-6 text-ink placeholder:text-ink/40 outline-none focus:border-navy-500"
           placeholder="••••••••"
         />
 

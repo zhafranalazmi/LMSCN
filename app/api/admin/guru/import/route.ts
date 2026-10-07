@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { normalisasiPengajaranGuru } from "@/lib/pengajaranGuru";
 import Guru from "@/models/Guru";
 import Mapel from "@/models/Mapel";
 import Kelas from "@/models/Kelas";
@@ -38,15 +39,55 @@ export async function GET() {
     { header: "Password", key: "password", width: 20 },
     { header: "Mapel", key: "mapel", width: 36 },
     { header: "Kelas Diampu", key: "kelasDiampu", width: 28 },
+    { header: "Pengajaran", key: "pengajaran", width: 70 },
   ];
+  worksheet.getCell("F1").note =
+    "Format: Mapel: Kelas 1, Kelas 2; Mapel lain: Kelas 3. Kolom ini mengatur kelas untuk setiap mapel dan mengungguli kolom Mapel/Kelas Diampu.";
   worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
   worksheet.getRow(1).fill = {
     type: "pattern",
     pattern: "solid",
     fgColor: { argb: "FF3D6687" },
   };
+  worksheet.getRow(1).alignment = { vertical: "middle", wrapText: true };
+  worksheet.getRow(1).height = 30;
   worksheet.views = [{ state: "frozen", ySplit: 1 }];
-  worksheet.autoFilter = "A1:E1";
+  worksheet.autoFilter = "A1:F1";
+
+  const panduan = workbook.addWorksheet("Panduan");
+  panduan.columns = [
+    { header: "Bagian", key: "bagian", width: 30 },
+    { header: "Petunjuk", key: "petunjuk", width: 90 },
+  ];
+  panduan.mergeCells("A1:B1");
+  panduan.getCell("A1").value = "PANDUAN PENGISIAN DATA GURU";
+  panduan.getCell("A1").font = { bold: true, size: 16, color: { argb: "FFFFFFFF" } };
+  panduan.getCell("A1").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF3D6687" },
+  };
+  panduan.getCell("A1").alignment = { vertical: "middle" };
+  panduan.getRow(1).height = 32;
+  panduan.addRows([
+    { bagian: "Kolom Pengajaran", petunjuk: "Tulis setiap mapel diikuti kelas yang diajar. Format: Mapel: Kelas 1, Kelas 2; Mapel lain: Kelas 3." },
+    { bagian: "Contoh", petunjuk: "Matematika: X RPL 1, X RPL 2; Bahasa Inggris: XI RPL 1" },
+    { bagian: "Pemisah mapel", petunjuk: "Gunakan titik koma (;) untuk memisahkan pasangan mapel." },
+    { bagian: "Pemisah kelas", petunjuk: "Gunakan koma (,) untuk memisahkan beberapa kelas pada mapel yang sama." },
+    { bagian: "Nama mapel dan kelas", petunjuk: "Nama harus cocok dengan data master Mata Pelajaran dan Manajemen Kelas di aplikasi." },
+    { bagian: "Format lama", petunjuk: "Kolom Mapel dan Kelas Diampu lama masih didukung. Jika kolom Pengajaran diisi, kolom Pengajaran yang digunakan." },
+    { bagian: "Kolom wajib", petunjuk: "Nama, Email, dan Password wajib diisi untuk setiap guru." },
+  ]);
+  panduan.getRow(2).font = { bold: true, color: { argb: "FF1D3345" } };
+  panduan.getColumn(1).font = { bold: true, color: { argb: "FF1D3345" } };
+  panduan.getColumn(1).eachCell((cell, rowNumber) => {
+    if (rowNumber > 1) cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFEAF1F5" } };
+  });
+  panduan.eachRow((row) => {
+    row.alignment = { vertical: "top", wrapText: true };
+    if (row.number > 1) row.height = 34;
+  });
+  panduan.views = [{ state: "frozen", ySplit: 1 }];
 
   const buffer = await workbook.xlsx.writeBuffer();
   return new NextResponse(new Uint8Array(buffer), {
@@ -104,6 +145,7 @@ export async function POST(req: Request) {
 
   const mapelColumn = headers.get("mapel");
   const kelasColumn = headers.get("kelasdiampu");
+  const pengajaranColumn = headers.get("pengajaran");
   const rows: {
     row: number;
     name: string;
@@ -111,6 +153,7 @@ export async function POST(req: Request) {
     password: string;
     mapel: string[];
     kelasDiampu: string[];
+    pengajaran: { mapel: string; kelas: string[] }[];
   }[] = [];
   const errors: { row: number; message: string }[] = [];
   const seenEmails = new Set<string>();
@@ -122,8 +165,9 @@ export async function POST(req: Request) {
     const password = row.getCell(passwordColumn).text.trim();
     const mapel = mapelColumn ? row.getCell(mapelColumn).text : "";
     const kelasDiampu = kelasColumn ? row.getCell(kelasColumn).text : "";
+    const pengajaranText = pengajaranColumn ? row.getCell(pengajaranColumn).text.trim() : "";
 
-    if (![name, email, password, mapel, kelasDiampu].some((value) => value.trim())) continue;
+    if (!name && !email && !password) continue;
     if (!name || !email || !password) {
       errors.push({ row: rowNumber, message: "Nama, email, dan password wajib diisi" });
       continue;
@@ -139,6 +183,23 @@ export async function POST(req: Request) {
     seenEmails.add(email);
     const splitList = (value: string) =>
       value.split(/[;,\n]+/).map((item) => item.trim()).filter(Boolean);
+    const pengajaran: { mapel: string; kelas: string[] }[] = [];
+    let formatPengajaranValid = true;
+    for (const pasangan of pengajaranText.split(/[;\n]+/).map((item) => item.trim()).filter(Boolean)) {
+      const pemisah = pasangan.indexOf(":");
+      const namaMapel = pemisah >= 0 ? pasangan.slice(0, pemisah).trim() : "";
+      const daftarKelas = pemisah >= 0 ? splitList(pasangan.slice(pemisah + 1)) : [];
+      if (!namaMapel || daftarKelas.length === 0) {
+        errors.push({
+          row: rowNumber,
+          message: `Format Pengajaran tidak valid: "${pasangan}". Gunakan format Mapel: Kelas 1, Kelas 2`,
+        });
+        formatPengajaranValid = false;
+        break;
+      }
+      pengajaran.push({ mapel: namaMapel, kelas: daftarKelas });
+    }
+    if (!formatPengajaranValid) continue;
     rows.push({
       row: rowNumber,
       name,
@@ -146,6 +207,7 @@ export async function POST(req: Request) {
       password,
       mapel: splitList(mapel),
       kelasDiampu: splitList(kelasDiampu),
+      pengajaran,
     });
   }
 
@@ -178,13 +240,26 @@ export async function POST(req: Request) {
       return [...hasil];
     };
 
-    const mapelKanonis = cocokkanNama(row.mapel, petaMapel, "Mapel");
-    const kelasKanonis = cocokkanNama(row.kelasDiampu, petaKelas, "Kelas");
+    const pengajaranKanonis = row.pengajaran.length
+      ? row.pengajaran.map((item) => ({
+          mapel: cocokkanNama([item.mapel], petaMapel, "Mapel")[0] ?? "",
+          kelas: cocokkanNama(item.kelas, petaKelas, "Kelas"),
+        }))
+      : cocokkanNama(row.mapel, petaMapel, "Mapel").map((namaMapel) => ({
+          mapel: namaMapel,
+          kelas: cocokkanNama(row.kelasDiampu, petaKelas, "Kelas"),
+        }));
     if (pesan.length > 0) {
       errors.push({ row: row.row, message: pesan.join("; ") });
       continue;
     }
-    rowsValid.push({ ...row, mapel: mapelKanonis, kelasDiampu: kelasKanonis });
+    const pengajaran = normalisasiPengajaranGuru(pengajaranKanonis);
+    rowsValid.push({
+      ...row,
+      mapel: [...new Set(pengajaran.map((item) => item.mapel))],
+      kelasDiampu: [...new Set(pengajaran.flatMap((item) => item.kelas))],
+      pengajaran,
+    });
   }
 
   if (rowsValid.length === 0) {
@@ -213,6 +288,7 @@ export async function POST(req: Request) {
         password: await bcrypt.hash(row.password, 10),
         mapel: row.mapel,
         kelasDiampu: row.kelasDiampu,
+        pengajaran: row.pengajaran,
       });
       imported += 1;
     } catch (error) {

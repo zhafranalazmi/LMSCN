@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { guruMengajar } from "@/lib/pengajaranGuru";
 import Tugas from "@/models/Tugas";
 import Guru from "@/models/Guru";
 
@@ -32,8 +33,8 @@ export async function POST(req: Request) {
   await connectDB();
 
   // Validasi: guru cuma boleh bikin tugas untuk mapel & kelas yang dia ampu
-  const guru = await Guru.findById((session.user as any).id).select("mapel kelasDiampu");
-  if (!guru || !guru.mapel.includes(mapel) || !guru.kelasDiampu.includes(kelas)) {
+  const guru = await Guru.findById((session.user as any).id).select("mapel kelasDiampu pengajaran");
+  if (!guru || !guruMengajar(guru, mapel, kelas)) {
     return NextResponse.json(
       { message: "Mapel atau kelas tidak valid untuk akunmu" },
       { status: 403 }

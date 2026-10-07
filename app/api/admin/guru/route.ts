@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { daftarKelasPengajaran, normalisasiPengajaranGuru } from "@/lib/pengajaranGuru";
 import Guru from "@/models/Guru";
 
 export async function GET() {
@@ -40,13 +41,17 @@ export async function POST(req: Request) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+  const pengajaran = normalisasiPengajaranGuru(body.pengajaran, mapel, kelasDiampu);
+  const mapelGuru = [...new Set(pengajaran.map((item) => item.mapel))];
+  const kelasGuru = [...new Set(pengajaran.flatMap((item) => item.kelas))];
 
   const guru = await Guru.create({
     name,
     email: email.toLowerCase(),
     password: hashedPassword,
-    mapel: Array.isArray(mapel) ? mapel : [],
-    kelasDiampu: Array.isArray(kelasDiampu) ? kelasDiampu : [],
+    mapel: mapelGuru,
+    kelasDiampu: kelasGuru,
+    pengajaran,
   });
 
   const { password: _pw, ...guruWithoutPassword } = guru.toObject();

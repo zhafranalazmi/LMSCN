@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function kurikulumDashboard() {
   const menu = [
-    { title: "Data Guru", desc: "Tinjau data dan aktivitas guru", icon: "👩‍🏫", href: "/dashboard/kurikulum/guru" },
     { title: "Rekap Nilai", desc: "Tinjau nilai per mata pelajaran", icon: "📊", href: "/dashboard/kurikulum/nilai" },
+    { title: "Unduh Data", desc: "Unduh data siswa dan guru dengan filter", icon: "📥", href: "/dashboard/kurikulum/unduh-data" },
   ];
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { PengajaranGuru } from "@/lib/pengajaranGuru";
 
 interface AsesmenRingkas {
   _id: string;
@@ -20,7 +21,7 @@ interface RekapSiswa {
 
 export default function NilaiPage() {
   const [mapelSaya, setMapelSaya] = useState<string[]>([]);
-  const [kelasSaya, setKelasSaya] = useState<string[]>([]);
+  const [pengajaranSaya, setPengajaranSaya] = useState<PengajaranGuru[]>([]);
   const [mapel, setMapel] = useState("");
   const [kelas, setKelas] = useState("");
 
@@ -44,7 +45,7 @@ export default function NilaiPage() {
       const res = await fetch("/api/guru/me");
       const data = await res.json();
       setMapelSaya(Array.isArray(data.mapel) ? data.mapel : []);
-      setKelasSaya(Array.isArray(data.kelasDiampu) ? data.kelasDiampu : []);
+      setPengajaranSaya(Array.isArray(data.pengajaran) ? data.pengajaran : []);
       setLoadingMe(false);
     }
     loadMe();
@@ -55,8 +56,11 @@ export default function NilaiPage() {
   }, [mapelSaya]);
 
   useEffect(() => {
-    if (kelasSaya.length > 0 && !kelas) setKelas(kelasSaya[0]);
-  }, [kelasSaya]);
+    const kelasTersedia = pengajaranSaya.find((item) => item.mapel === mapel)?.kelas ?? [];
+    if (!kelasTersedia.includes(kelas)) setKelas(kelasTersedia[0] ?? "");
+  }, [mapel, pengajaranSaya]);
+
+  const kelasTersedia = pengajaranSaya.find((item) => item.mapel === mapel)?.kelas ?? [];
 
   useEffect(() => {
     setNilaiTugasDraft({});
@@ -174,7 +178,7 @@ export default function NilaiPage() {
     }
   }
 
-  const tidakBisaLihat = mapelSaya.length === 0 || kelasSaya.length === 0;
+  const tidakBisaLihat = mapelSaya.length === 0 || !pengajaranSaya.some((item) => item.kelas.length > 0);
 
   return (
     <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
@@ -228,7 +232,7 @@ export default function NilaiPage() {
                   onChange={(e) => setKelas(e.target.value)}
                   className="rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-2.5 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 >
-                  {kelasSaya.map((k) => (
+                  {kelasTersedia.map((k) => (
                     <option key={k} value={k}>{k}</option>
                   ))}
                 </select>

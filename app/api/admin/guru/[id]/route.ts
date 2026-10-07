@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { normalisasiPengajaranGuru } from "@/lib/pengajaranGuru";
 import Guru from "@/models/Guru";
 
 export async function PUT(
@@ -40,9 +41,11 @@ export async function PUT(
   const update: any = {
     name,
     email: email.toLowerCase(),
-    mapel: Array.isArray(mapel) ? mapel : [],
-    kelasDiampu: Array.isArray(kelasDiampu) ? kelasDiampu : [],
   };
+  const pengajaran = normalisasiPengajaranGuru(body.pengajaran, mapel, kelasDiampu);
+  update.mapel = [...new Set(pengajaran.map((item) => item.mapel))];
+  update.kelasDiampu = [...new Set(pengajaran.flatMap((item) => item.kelas))];
+  update.pengajaran = pengajaran;
 
   if (password) {
     update.password = await bcrypt.hash(password, 10);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
+import type { PengajaranGuru } from "@/lib/pengajaranGuru";
 
 type TipeSoal = "pg" | "esai";
 
@@ -35,7 +36,7 @@ function soalKosong(tipe: TipeSoal): SoalForm {
 export default function AsesmenPage() {
   const [asesmenList, setAsesmenList] = useState<Asesmen[]>([]);
   const [mapelSaya, setMapelSaya] = useState<string[]>([]);
-  const [kelasSaya, setKelasSaya] = useState<string[]>([]);
+  const [pengajaranSaya, setPengajaranSaya] = useState<PengajaranGuru[]>([]);
   const [loading, setLoading] = useState(true);
   const [parsingWord, setParsingWord] = useState(false);
   const [wordError, setWordError] = useState<string | null>(null);
@@ -61,7 +62,7 @@ export default function AsesmenPage() {
     const asesmenData = await asesmenRes.json();
 
     setMapelSaya(Array.isArray(meData.mapel) ? meData.mapel : []);
-    setKelasSaya(Array.isArray(meData.kelasDiampu) ? meData.kelasDiampu : []);
+    setPengajaranSaya(Array.isArray(meData.pengajaran) ? meData.pengajaran : []);
     setAsesmenList(Array.isArray(asesmenData) ? asesmenData : []);
     setLoading(false);
   }
@@ -75,8 +76,11 @@ export default function AsesmenPage() {
   }, [mapelSaya]);
 
   useEffect(() => {
-    if (kelasSaya.length > 0 && !kelas) setKelas(kelasSaya[0]);
-  }, [kelasSaya]);
+    const kelasTersedia = pengajaranSaya.find((item) => item.mapel === mapel)?.kelas ?? [];
+    if (!kelasTersedia.includes(kelas)) setKelas(kelasTersedia[0] ?? "");
+  }, [mapel, pengajaranSaya]);
+
+  const kelasTersedia = pengajaranSaya.find((item) => item.mapel === mapel)?.kelas ?? [];
 
   function resetForm() {
     setJudul("");
@@ -217,7 +221,7 @@ export default function AsesmenPage() {
     loadData();
   }
 
-  const tidakBisaBuat = mapelSaya.length === 0 || kelasSaya.length === 0;
+  const tidakBisaBuat = mapelSaya.length === 0 || !pengajaranSaya.some((item) => item.kelas.length > 0);
 
   return (
     <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
@@ -319,7 +323,7 @@ export default function AsesmenPage() {
                   onChange={(e) => setKelas(e.target.value)}
                   className="w-full rounded-xl border border-[#3d6687]/15 bg-[#f8fafb] px-4 py-3 text-sm font-medium text-[#1d3345] outline-none transition focus:border-[#4b7899] focus:ring-4 focus:ring-[#4b7899]/10"
                 >
-                  {kelasSaya.map((k) => (
+                  {kelasTersedia.map((k) => (
                     <option key={k} value={k}>{k}</option>
                   ))}
                 </select>
