@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import mongoose from "mongoose";
 import { authOptions } from "@/lib/auth";
 import { createCloudinaryPdfDownloadUrl } from "@/lib/cloudinary";
 import { getStoredFile } from "@/lib/gridfs";
@@ -34,13 +35,16 @@ export async function GET(
     return NextResponse.json({ message: "File tidak ditemukan" }, { status: 404 });
   }
 
-  const bucket = (await import("mongoose")).default.connection.db;
-  if (!bucket) {
+  const db = mongoose.connection.db;
+  if (!db) {
     return NextResponse.json({ message: "Database tidak tersedia" }, { status: 500 });
   }
 
-  const { GridFSBucket } = await import("mongodb");
-  const downloadStream = new GridFSBucket(bucket, { bucketName: "uploads" }).openDownloadStream(file._id);
+ const fileId = new mongoose.Types.ObjectId(String(file._id));
+
+const downloadStream = new mongoose.mongo.GridFSBucket(db, {
+  bucketName: "uploads",
+}).openDownloadStream(fileId);
 
   return new NextResponse(downloadStream as any, {
     headers: {

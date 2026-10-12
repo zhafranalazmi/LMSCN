@@ -1,7 +1,10 @@
-import { GridFSBucket, ObjectId } from "mongodb";
 import { Readable } from "stream";
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
+
+const { GridFSBucket } = mongoose.mongo;
+const ObjectId = mongoose.Types.ObjectId;
+type ObjectId = mongoose.Types.ObjectId;
 
 const BUCKET_NAME = "uploads";
 
