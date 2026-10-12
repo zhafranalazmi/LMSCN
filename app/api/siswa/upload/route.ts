@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { storeUploadedFile } from "@/lib/gridfs";
+import { uploadPdfToCloudinary } from "@/lib/cloudinary";
 
 export const runtime = "nodejs";
 
@@ -25,20 +25,14 @@ export async function POST(req: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const storedFile = await storeUploadedFile(
-      buffer,
-      file.name,
-      "application/pdf",
-      (session.user as any).id,
-      "siswa"
-    );
+    const storedFile = await uploadPdfToCloudinary(buffer, file.name);
 
     return NextResponse.json({
-      url: `/api/files/${storedFile.id.toString()}`,
-      fileId: storedFile.id.toString(),
+      url: `/api/files/${encodeURIComponent(storedFile.public_id)}`,
+      fileId: storedFile.public_id,
     });
   } catch (error) {
-    console.error("Gagal menyimpan PDF ke MongoDB:", error);
+    console.error("Gagal menyimpan PDF ke Cloudinary:", error);
     return NextResponse.json({ message: "Gagal mengunggah PDF ke penyimpanan" }, { status: 500 });
   }
 }

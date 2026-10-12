@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { createCloudinaryPdfDownloadUrl } from "@/lib/cloudinary";
 import { getStoredFile } from "@/lib/gridfs";
 
 export const runtime = "nodejs";
@@ -12,6 +13,20 @@ export async function GET(
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const cloudinaryPublicId =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-[A-Za-z0-9_.-]+\.pdf$/i;
+  if (cloudinaryPublicId.test(params.id)) {
+    try {
+      return NextResponse.redirect(createCloudinaryPdfDownloadUrl(params.id));
+    } catch (error) {
+      console.error("Gagal membuat tautan unduhan Cloudinary:", error);
+      return NextResponse.json(
+        { message: "Gagal membuat tautan unduhan file" },
+        { status: 500 }
+      );
+    }
   }
 
   const file = await getStoredFile(params.id);
