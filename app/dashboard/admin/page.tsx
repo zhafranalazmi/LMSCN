@@ -15,13 +15,40 @@ type Stats = {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    fetch("/api/admin/stats")
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .finally(() => setLoading(false));
-  }, []);
+    let active = true;
+
+    async function loadStats() {
+      setLoading(true);
+      setError(false);
+      try {
+        const response = await fetch("/api/admin/stats");
+        if (!response.ok) {
+          throw new Error("Gagal mengambil statistik");
+        }
+        const data: Stats = await response.json();
+        if (active) {
+          setStats(data);
+        }
+      } catch {
+        if (active) {
+          setError(true);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadStats();
+    return () => {
+      active = false;
+    };
+  }, [attempt]);
 
   const cards = [
     { label: "Admin", value: stats?.admin, icon: "🛡️" },
@@ -56,8 +83,12 @@ export default function AdminDashboard() {
             <p className="text-xs font-bold uppercase tracking-wider text-[#3d6687]/60">
               Total Akun Terdaftar
             </p>
-            <p className="mt-1 font-display text-4xl font-bold text-[#1d3345]">
-              {loading ? "…" : stats?.total ?? 0}
+            <p
+              aria-live="polite"
+              aria-busy={loading}
+              className="mt-1 font-display text-4xl font-bold text-[#1d3345]"
+            >
+              {loading ? "Memuat..." : error ? "Tidak tersedia" : stats?.total ?? 0}
             </p>
           </div>
           <span className="rounded-full bg-[#4b7899]/10 px-4 py-2 text-xs font-bold text-[#3d6687]">
@@ -67,35 +98,62 @@ export default function AdminDashboard() {
       </section>
 
       {/* Breakdown per role */}
-      <section className="rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex flex-col gap-1">
-          <h2 className="text-base font-bold text-[#1d3345]">Akun per Role</h2>
-          <p className="text-sm text-[#1d3345]/55">
-            Rincian jumlah akun terdaftar untuk setiap role di sistem.
-          </p>
-        </div>
+      {error ? (
+        <section
+          role="alert"
+          className="rounded-[24px] border border-red-200 bg-white p-5 text-sm text-red-700 shadow-sm sm:p-6"
+        >
+          <p>Statistik gagal dimuat. Periksa koneksi lalu coba lagi.</p>
+          <button
+            type="button"
+            onClick={() => setAttempt((value) => value + 1)}
+            className="mt-3 min-h-11 rounded-lg bg-navy-700 px-4 font-medium text-white transition-colors hover:bg-navy-900 active:bg-navy-900"
+          >
+            Coba lagi
+          </button>
+        </section>
+      ) : !loading && stats?.total === 0 ? (
+        <section
+          role="status"
+          className="rounded-[24px] border border-[#3d6687]/10 bg-white p-5 text-sm text-[#1d3345] shadow-sm sm:p-6"
+        >
+          Belum ada akun terdaftar. Tambahkan akun melalui menu pengelolaan untuk
+          melihat ringkasan di sini.
+        </section>
+      ) : (
+        <section
+          aria-busy={loading}
+          className="rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm sm:p-6"
+        >
+          <div className="mb-5 flex flex-col gap-1">
+            <h2 className="text-base font-bold text-[#1d3345]">Akun per Role</h2>
+            <p className="text-sm text-[#1d3345]/55">
+              Rincian jumlah akun terdaftar untuk setiap role di sistem.
+            </p>
+          </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
-            <div
-              key={card.label}
-              className="flex items-center gap-4 rounded-2xl border border-[#3d6687]/10 bg-[#f8fafb] px-5 py-4 transition hover:border-[#4b7899]/30 hover:bg-[#4b7899]/[0.04]"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4b7899]/10 text-lg">
-                {card.icon}
-              </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-[#1d3345]/50">
-                  {card.label}
-                </p>
-                <p className="font-display text-2xl font-bold text-[#1d3345]">
-                  {loading ? "…" : card.value ?? 0}
-                </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {cards.map((card) => (
+              <div
+                key={card.label}
+                className="flex items-center gap-4 rounded-2xl border border-[#3d6687]/10 bg-[#f8fafb] px-5 py-4 transition hover:border-[#4b7899]/30 hover:bg-[#4b7899]/[0.04]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4b7899]/10 text-lg">
+                  {card.icon}
+                </span>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#1d3345]/50">
+                    {card.label}
+                  </p>
+                  <p className="font-display text-2xl font-bold text-[#1d3345]">
+                    {loading ? "Memuat..." : card.value ?? 0}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

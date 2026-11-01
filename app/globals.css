@@ -12,8 +12,46 @@
     @apply bg-white text-ink;
   }
   :focus-visible {
-    outline: 2px solid theme("colors.navy.500");
+    outline: 2px solid theme("colors.navy.900");
     outline-offset: 2px;
+  }
+  :where(
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label,
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    [role="button"],
+    [role="tab"],
+    [role="switch"]
+  ) {
+    cursor: pointer;
+  }
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  textarea:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  @media (hover: hover) {
+    :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"])):hover {
+      transform: translateY(-1px);
+    }
+  }
+  :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"])):active {
+    transform: scale(0.98);
+  }
+  .dash aside :focus-visible {
+    outline-color: #fff;
+  }
+  .dark .dash :focus-visible {
+    outline-color: #b8d4e2;
+  }
+  .dark .dash aside :focus-visible {
+    outline-color: #fff;
   }
 }
 
@@ -45,7 +83,6 @@
 
   .dash main > section[class*="bg-gradient-to-r"] {
     border: 1px solid rgba(33, 26, 29, 0.1) !important;
-    border-left: 4px solid #3a7ca5 !important;
     border-radius: 14px !important;
     background-color: #ffffff !important;
     background-image: none !important;
@@ -62,9 +99,9 @@
   }
 
   .dash main > section[class*="bg-gradient-to-r"] span {
-    border-color: rgba(58, 124, 165, 0.18) !important;
-    background-color: rgba(58, 124, 165, 0.08) !important;
-    color: #2f6690 !important;
+    border-color: rgba(142, 59, 70, 0.18) !important;
+    background-color: rgba(142, 59, 70, 0.08) !important;
+    color: #8e3b46 !important;
   }
 
   .dash main [class*="rounded-[24px]"]:not(.sheet-panel):not(.drawer-panel) {
@@ -82,12 +119,6 @@
   .dash main a[class*="rounded-lg"],
   .dash main a[class*="rounded-xl"] {
     border-radius: 8px !important;
-  }
-
-  .sheet-backdrop,
-  .sheet-panel,
-  .drawer-panel {
-    will-change: transform, opacity;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -123,6 +154,20 @@
   to   { opacity: 1; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"])):hover,
+  :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"])):active {
+    transform: none !important;
+  }
+}
+
 
 /* ==========================================================================
    Tema gelap
@@ -133,33 +178,33 @@
    Kalau menambah warna baru di halaman, tambahkan padanannya di bawah.
    ========================================================================== */
 html.dark { color-scheme: dark; }
-.dark body { background-color: #0c1620; color: rgb(226,236,243); }
-.dark .dash { background-color: #0c1620; color: rgb(226,236,243); }
+.dark body { background-color: #181316; color: rgb(242,232,229); }
+.dark .dash { background-color: #181316; color: rgb(242,232,229); }
 @media (max-width: 767px) {
-  .dark .dash { background-image: linear-gradient(to bottom, #12212d, #0c1620); }
+  .dark .dash { background-image: linear-gradient(to bottom, #2b1d21, #181316); }
 }
 .dark .dash .mnav-fade {
-  background-image: linear-gradient(to bottom, #12212d, rgba(18, 33, 45, 0.85), transparent);
+  background-image: linear-gradient(to bottom, #2b1d21, rgba(43, 29, 33, 0.85), transparent);
 }
-.dark .dash ::placeholder { color: rgba(226,236,243, 0.35); }
+.dark .dash ::placeholder { color: rgba(242,232,229, 0.55); }
 .dark .dash .sheet-backdrop { background-color: rgba(4, 10, 16, 0.65); }
 .dark .dash main > section[class*="bg-gradient-to-r"] {
-  border-color: rgba(138, 172, 190, 0.18) !important;
-  background-color: #172633 !important;
-  color: rgb(226, 236, 243) !important;
+  border-color: rgba(225, 196, 190, 0.18) !important;
+  background-color: #2b2023 !important;
+  color: rgb(242, 232, 229) !important;
 }
-.dark .dash main > section[class*="bg-gradient-to-r"] h1 { color: rgb(226, 236, 243) !important; }
-.dark .dash main > section[class*="bg-gradient-to-r"] p { color: rgba(226, 236, 243, 0.62) !important; }
+.dark .dash main > section[class*="bg-gradient-to-r"] h1 { color: rgb(242, 232, 229) !important; }
+.dark .dash main > section[class*="bg-gradient-to-r"] p { color: rgba(242, 232, 229, 0.82) !important; }
 .dark .dash main > section[class*="bg-gradient-to-r"] span {
-  border-color: rgba(138, 172, 190, 0.24) !important;
-  background-color: rgba(138, 172, 190, 0.12) !important;
-  color: #b8d4e2 !important;
+  border-color: rgba(225, 196, 190, 0.24) !important;
+  background-color: rgba(225, 196, 190, 0.12) !important;
+  color: #f0c9c4 !important;
 }
 
 .dark .dash .bg-white { background-color: #172633; }
 .dark .dash .bg-\[\#f8fafb\] { background-color: #1c2e3d; }
 .dark .dash .bg-\[\#f5f6f6\] { background-color: #101d28; }
-.dark .dash .bg-navy-700 { background-color: #122431; }
+.dark .dash .bg-navy-700 { background-color: #46252c; }
 .dark .dash .bg-\[\#c3c4c0\]\/20 { background-color: rgba(138,172,190,.10); }
 .dark .dash .bg-\[\#c3c4c0\]\/30 { background-color: rgba(138,172,190,.14); }
 .dark .dash .bg-\[\#4b7899\]\/10 { background-color: rgba(75,120,153,.24); }
@@ -211,3 +256,99 @@ html.dark { color-scheme: dark; }
 .dark .dash .to-\[\#5b87a6\] { --tw-gradient-to: #2f6688 var(--tw-gradient-to-position); }
 .dark .dash .to-\[\#4b7899\] { --tw-gradient-to: #285a7b var(--tw-gradient-to-position); }
 .dark .dash .from-\[\#3d6687\]\/\[0\.07\] { --tw-gradient-from: rgba(138,172,190,.10) var(--tw-gradient-from-position); --tw-gradient-to: rgba(138,172,190,0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+
+.dash [class*="bg-[#f8fafb]"] { background-color: #fbf8f6 !important; }
+.dash [class*="bg-[#f5f6f6]"] { background-color: #f5f0ec !important; }
+.dash [class*="text-[#1d3345]"] { color: #292727 !important; }
+.dash [class*="text-[#3d6687]"] { color: #8e3b46 !important; }
+.dash [class^="bg-[#3d6687]"],
+.dash [class*=" bg-[#3d6687]"],
+.dash [class^="bg-[#4b7899]"],
+.dash [class*=" bg-[#4b7899]"] { background-color: #8e3b46 !important; }
+.dash [class^="bg-[#3d6687]/"],
+.dash [class*=" bg-[#3d6687]/"] { background-color: rgba(142, 59, 70, 0.08) !important; }
+.dash [class^="bg-[#4b7899]/"],
+.dash [class*=" bg-[#4b7899]/"] { background-color: rgba(142, 59, 70, 0.1) !important; }
+.dash [class^="bg-[#2f5573]"],
+.dash [class*=" bg-[#2f5573]"] { background-color: #642a34 !important; }
+.dash [class^="border-[#3d6687]"],
+.dash [class*=" border-[#3d6687]"],
+.dash [class^="border-t-[#3d6687]"],
+.dash [class*=" border-t-[#3d6687]"],
+.dash [class^="border-[#4b7899]"],
+.dash [class*=" border-[#4b7899]"],
+.dash [class^="border-t-[#4b7899]"],
+.dash [class*=" border-t-[#4b7899]"] { border-color: rgba(142, 59, 70, 0.22) !important; }
+.dash [class*="focus:border-[#4b7899]"]:focus { border-color: #8e3b46 !important; }
+.dash [class*="focus:ring-[#4b7899]"]:focus { --tw-ring-color: rgba(142, 59, 70, 0.18) !important; }
+.dash [class*="hover:bg-[#1d3345]/"]:hover { background-color: rgba(41, 39, 39, 0.06) !important; }
+.dash [class*="hover:bg-[#3d6687]/"]:hover { background-color: rgba(142, 59, 70, 0.08) !important; }
+.dash [class*="hover:bg-[#4b7899]/"]:hover { background-color: rgba(142, 59, 70, 0.12) !important; }
+.dash [class*="hover:bg-[#2f5573]"]:hover { background-color: #642a34 !important; }
+.dash [class*="hover:border-[#3d6687]"]:hover { border-color: rgba(142, 59, 70, 0.45) !important; }
+.dash [class*="hover:border-[#4b7899]"]:hover { border-color: rgba(142, 59, 70, 0.45) !important; }
+.dash [class*="hover:text-[#3d6687]"]:hover { color: #642a34 !important; }
+
+.dark .dash [class*="bg-[#f8fafb]"] { background-color: #302327 !important; }
+.dark .dash [class*="bg-[#f5f6f6]"] { background-color: #21191c !important; }
+.dark .dash .bg-navy-700 { background-color: #46252c !important; }
+.dark .dash .bg-white,
+.dark .dash input.bg-white,
+.dark .dash select.bg-white,
+.dark .dash textarea.bg-white { background-color: #2b2023 !important; }
+.dark .dash [class*="text-[#1d3345]"] { color: rgba(242, 232, 229, 0.88) !important; }
+.dark .dash [class*="text-[#3d6687]"],
+.dark .dash .text-navy-700 { color: #f0c9c4 !important; }
+.dark .dash [class^="bg-[#3d6687]"],
+.dark .dash [class*=" bg-[#3d6687]"],
+.dark .dash [class^="bg-[#4b7899]"],
+.dark .dash [class*=" bg-[#4b7899]"] { background-color: #8e3b46 !important; }
+.dark .dash [class^="bg-[#3d6687]/"],
+.dark .dash [class*=" bg-[#3d6687]/"],
+.dark .dash [class^="bg-[#4b7899]/"],
+.dark .dash [class*=" bg-[#4b7899]/"] { background-color: rgba(240, 201, 196, 0.12) !important; }
+.dark .dash [class^="bg-[#2f5573]"],
+.dark .dash [class*=" bg-[#2f5573]"] { background-color: #642a34 !important; }
+.dark .dash [class^="border-[#3d6687]"],
+.dark .dash [class*=" border-[#3d6687]"],
+.dark .dash [class^="border-t-[#3d6687]"],
+.dark .dash [class*=" border-t-[#3d6687]"],
+.dark .dash [class^="border-[#4b7899]"],
+.dark .dash [class*=" border-[#4b7899]"],
+.dark .dash [class^="border-t-[#4b7899]"],
+.dark .dash [class*=" border-t-[#4b7899]"] { border-color: rgba(240, 201, 196, 0.22) !important; }
+.dark .dash [class*="focus:border-[#4b7899]"]:focus { border-color: #f0c9c4 !important; }
+.dark .dash [class*="focus:ring-[#4b7899]"]:focus { --tw-ring-color: rgba(240, 201, 196, 0.24) !important; }
+.dark .dash [class*="hover:bg-[#1d3345]/"]:hover { background-color: rgba(242, 232, 229, 0.08) !important; }
+.dark .dash [class*="hover:bg-[#3d6687]/"]:hover,
+.dark .dash [class*="hover:bg-[#4b7899]/"]:hover { background-color: rgba(240, 201, 196, 0.16) !important; }
+.dark .dash [class*="hover:bg-[#2f5573]"]:hover { background-color: #642a34 !important; }
+.dark .dash [class*="hover:border-[#3d6687]"]:hover,
+.dark .dash [class*="hover:border-[#4b7899]"]:hover { border-color: rgba(240, 201, 196, 0.5) !important; }
+.dark .dash [class*="hover:text-[#3d6687]"]:hover { color: #fff1ee !important; }
+.dash [class*="from-[#3d6687]"] { --tw-gradient-from: #8e3b46 !important; --tw-gradient-to: rgba(142, 59, 70, 0) !important; }
+.dash [class*="via-[#4b7899]"] {
+  --tw-gradient-via: #a84f58 !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #a84f58 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+.dash [class*="to-[#5b87a6]"] { --tw-gradient-to: #642a34 !important; }
+.dark .dash [class*="from-[#3d6687]"] { --tw-gradient-from: #46252c !important; --tw-gradient-to: rgba(70, 37, 44, 0) !important; }
+.dark .dash [class*="via-[#4b7899]"] {
+  --tw-gradient-via: #8e3b46 !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #8e3b46 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+.dark .dash [class*="to-[#5b87a6]"] { --tw-gradient-to: #642a34 !important; }
+
+a[href],
+button:not(:disabled),
+summary,
+select:not(:disabled),
+input:not(:disabled),
+textarea:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"],
+[role="switch"] {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

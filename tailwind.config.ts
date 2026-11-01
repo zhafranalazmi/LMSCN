@@ -1,5 +1,13 @@
 import type { Config } from "tailwindcss";
 
+const burgundyPalette = {
+  100: "#F1E7E4",
+  300: "#D2A9A3",
+  500: "#A84F58",
+  700: "#8E3B46",
+  900: "#642A34",
+};
+
 const config: Config = {
   darkMode: "class",
   content: [
@@ -9,14 +17,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          100: "#D9DCD6", // dari palet — background halaman
-          300: "#8AACBE", // tint tengah, buat border/hover halus
-          500: "#3A7CA5", // dari palet — accent/menu aktif
-          700: "#2F6690", // dari palet — dasar sidebar
-          900: "#21476A", // shade paling gelap, buat hover/pressed state
-        },
-        ink: "#211A1D",
+        burgundy: burgundyPalette,
+        navy: burgundyPalette,
+        ink: "#292727",
       },
       fontFamily: {
         display: ["'Space Grotesk'", "sans-serif"],

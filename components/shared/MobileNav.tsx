@@ -28,6 +28,7 @@ export default function MobileNav({
 }) {
   const pathname = usePathname() ?? "";
   const [open, setOpen] = useState(false);
+  const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef<HTMLButtonElement>(null);
 
@@ -49,7 +50,35 @@ export default function MobileNav({
   useEffect(() => {
     if (!open) return;
     const opener = openRef.current;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable?.length) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const focusIsInside = dialogRef.current?.contains(document.activeElement);
+      if (event.shiftKey && (!focusIsInside || document.activeElement === first)) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        (!focusIsInside || document.activeElement === last)
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -73,9 +102,9 @@ export default function MobileNav({
             aria-label="Buka menu"
             aria-haspopup="dialog"
             aria-expanded={open}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-100/70 text-navy-700 transition-colors active:bg-navy-100 dark:bg-white/10"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-100/70 text-navy-700 transition-colors hover:bg-navy-100 active:bg-navy-100 dark:bg-white/10 dark:hover:bg-white/15 dark:active:bg-white/20"
           >
-            <Menu size={20} />
+            <Menu size={20} aria-hidden="true" />
           </button>
 
           <div className="min-w-0 flex-1">
@@ -100,6 +129,7 @@ export default function MobileNav({
             aria-hidden="true"
           />
           <aside
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Menu navigasi"
@@ -122,9 +152,9 @@ export default function MobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Tutup menu"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white/20 active:bg-white/25"
               >
-                <X size={18} />
+                <X size={18} aria-hidden="true" />
               </button>
             </div>
 
@@ -149,13 +179,13 @@ export default function MobileNav({
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    className={`flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                       active
                         ? "bg-navy-500 text-white"
                         : "text-white/70 active:bg-white/5"
                     }`}
                   >
-                    {Icon && <Icon size={18} />}
+                    {Icon && <Icon size={18} aria-hidden="true" />}
                     {item.label}
                   </Link>
                 );
@@ -166,9 +196,9 @@ export default function MobileNav({
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: LOGOUT_HREF })}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 active:bg-white/5"
+                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 active:bg-white/15"
               >
-                <LogOut size={18} />
+                <LogOut size={18} aria-hidden="true" />
                 Keluar
               </button>
             </div>

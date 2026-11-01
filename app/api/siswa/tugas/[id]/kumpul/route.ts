@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
+import { getUploadedFilePublicId, uploadedFileBelongsTo } from "@/lib/uploadedFile";
 import Tugas from "@/models/Tugas";
 import PengumpulanTugas from "@/models/PengumpulanTugas";
 
@@ -22,6 +23,18 @@ export async function POST(
 
   if (!tipeLampiran || !lampiranUrl) {
     return NextResponse.json({ message: "Lampiran wajib diisi" }, { status: 400 });
+  }
+
+  const isAppFile = getUploadedFilePublicId(lampiranUrl) !== null;
+  if (
+    (tipeLampiran === "pdf" || isAppFile) &&
+    (tipeLampiran !== "pdf" ||
+      !(await uploadedFileBelongsTo(lampiranUrl, siswaId, "siswa")))
+  ) {
+    return NextResponse.json(
+      { message: "PDF harus diunggah dari akun ini" },
+      { status: 403 }
+    );
   }
 
   await connectDB();

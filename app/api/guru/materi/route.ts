@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import { guruMengajar } from "@/lib/pengajaranGuru";
+import { getUploadedFilePublicId, uploadedFileBelongsTo } from "@/lib/uploadedFile";
 import Materi from "@/models/Materi";
 import Guru from "@/models/Guru";
 
@@ -28,6 +29,22 @@ export async function POST(req: Request) {
 
   if (!judul || !mapel || !kelas || !tipeLampiran || !lampiranUrl) {
     return NextResponse.json({ message: "Semua field wajib diisi" }, { status: 400 });
+  }
+
+  const isAppFile = getUploadedFilePublicId(lampiranUrl) !== null;
+  if (
+    (tipeLampiran === "pdf" || isAppFile) &&
+    (tipeLampiran !== "pdf" ||
+      !(await uploadedFileBelongsTo(
+        lampiranUrl,
+        (session.user as any).id,
+        "guru"
+      )))
+  ) {
+    return NextResponse.json(
+      { message: "PDF harus diunggah dari akun ini" },
+      { status: 403 }
+    );
   }
 
   await connectDB();

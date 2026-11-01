@@ -16,24 +16,37 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
+      if (res?.error) {
+        setError("Email atau password salah");
+        return;
+      }
 
-    if (res?.error) {
-      setError("Email atau password salah");
-      return;
+      const sessionRes = await fetch("/api/auth/session");
+      if (!sessionRes.ok) {
+        throw new Error("Sesi login tidak dapat dimuat");
+      }
+
+      const session = await sessionRes.json();
+      const role = session?.user?.role;
+      if (
+        !["admin", "guru", "siswa", "kepsek", "kurikulum"].includes(role)
+      ) {
+        throw new Error("Peran akun tidak ditemukan");
+      }
+
+      router.push(`/dashboard/${role}`);
+    } catch {
+      setError("Tidak dapat menghubungi layanan login. Periksa koneksi lalu coba lagi.");
+    } finally {
+      setLoading(false);
     }
-
-    // Ambil session untuk tahu role, lalu redirect ke dashboard sesuai role
-    const sessionRes = await fetch("/api/auth/session");
-    const session = await sessionRes.json();
-    const role = session?.user?.role ?? "siswa";
-    router.push(`/dashboard/${role}`);
   }
 
   return (
@@ -47,6 +60,7 @@ export default function LoginPage() {
 
       <form
         onSubmit={handleSubmit}
+        aria-busy={loading}
         className="w-full max-w-sm bg-white/90 backdrop-blur rounded-2xl shadow-lg border border-white/40 p-6 sm:p-8"
       >
         <h1 className="font-display text-2xl font-bold text-navy-700 mb-1">
@@ -55,7 +69,10 @@ export default function LoginPage() {
         <p className="text-sm text-ink/60 mb-6">Portal Pembelajaran · SMK Citra Negara</p>
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 text-red-700 text-sm px-3 py-2">
+          <div
+            role="alert"
+            className="mb-4 rounded-lg bg-red-50 text-red-700 text-sm px-3 py-2"
+          >
             {error}
           </div>
         )}
@@ -69,7 +86,7 @@ export default function LoginPage() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-4 text-ink placeholder:text-ink/40 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-3 mb-4 text-ink placeholder:text-ink/40 focus:border-navy-500"
           placeholder="nama@citranegara.sch.id"
         />
 
@@ -82,14 +99,14 @@ export default function LoginPage() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 mb-6 text-ink placeholder:text-ink/40 outline-none focus:border-navy-500"
+          className="w-full rounded-lg border border-ink/15 bg-white px-3 py-3 mb-6 text-ink placeholder:text-ink/40 focus:border-navy-500"
           placeholder="••••••••"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-navy-700 text-white py-2.5 font-medium hover:bg-navy-900 transition-colors disabled:opacity-60"
+          className="w-full rounded-full bg-navy-700 text-white py-3 font-medium hover:bg-navy-900 active:bg-navy-900 transition-colors disabled:opacity-60"
         >
           {loading ? "Memproses..." : "Masuk"}
         </button>

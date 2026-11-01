@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { uploadPdfToCloudinary } from "@/lib/cloudinary";
+import { registerUploadedFile } from "@/lib/uploadedFile";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,11 @@ export async function POST(req: Request) {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     const storedFile = await uploadPdfToCloudinary(buffer, file.name);
+    await registerUploadedFile(
+      storedFile.public_id,
+      (session.user as any).id,
+      "siswa"
+    );
 
     return NextResponse.json({
       url: `/api/files/${encodeURIComponent(storedFile.public_id)}`,
