@@ -1,61 +1,113 @@
 import GreetingLine from "@/components/shared/GreetingLine";
 import Link from "next/link";
+import { BookOpen, ChevronRight, ClipboardCheck, ClipboardList, FileSpreadsheet, School } from "lucide-react";
 
 export default function GuruDashboard() {
   const menu = [
-    { title: "Kelas Saya", desc: "Lihat siswa per kelas yang diampu", icon: "🏫", href: "/dashboard/guru/kelas" },
-    { title: "Tugas", desc: "Buat dan kelola tugas kelas", icon: "📝", href: "/dashboard/guru/tugas" },
-    { title: "Materi", desc: "Unggah materi pembelajaran", icon: "📚", href: "/dashboard/guru/materi" },
-    { title: "Asesmen", desc: "Buat asesmen daring dan nilai hasilnya", icon: "🧪", href: "/dashboard/guru/asesmen" },
-  { title: "Rekap Nilai", desc: "Tinjau asesmen dan nilai tugas", icon: "📊", href: "/dashboard/guru/nilai" },
-  
+    {
+      title: "Kelas Saya",
+      desc: "Lihat daftar siswa per rombel yang diampu",
+      icon: School,
+      href: "/dashboard/guru/kelas",
+      tag: "4 Rombel",
+    },
+    {
+      title: "Tugas",
+      desc: "Buat tugas baru dan periksa pengumpulan siswa",
+      icon: ClipboardList,
+      href: "/dashboard/guru/tugas",
+      tag: "14 Perlu Nilai",
+    },
+    {
+      title: "Materi",
+      desc: "Unggah dokumen PDF, presentasi, dan materi ajar",
+      icon: BookOpen,
+      href: "/dashboard/guru/materi",
+      tag: "Bank Modul",
+    },
+    {
+      title: "Asesmen",
+      desc: "Buat kuis CBT daring dan evaluasi hasilnya",
+      icon: ClipboardCheck,
+      href: "/dashboard/guru/asesmen",
+      tag: "CBT Online",
+    },
+    {
+      title: "Rekap Nilai",
+      desc: "Tinjau akumulasi nilai dan unduh laporan Excel",
+      icon: FileSpreadsheet,
+      href: "/dashboard/guru/nilai",
+      tag: "Ekspor Nilai",
+    },
   ];
 
   return (
-    <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
-      <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
-        <div className="max-w-3xl">
-          <GreetingLine />
-          <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            PORTAL GURU
-          </span>
-          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Ringkasan Guru
-          </h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Kelola kelas, materi, tugas, dan penilaian dari satu tempat.
-          </p>
+    <main className="min-h-full space-y-6">
+      
+      {/* Header Banner */}
+      <section className="rounded-2xl border border-[#E8E2E4] bg-white p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full border border-[#FECDD3] bg-[#FFE4E6] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mulberry-800">
+                PORTAL GURU
+              </span>
+              <GreetingLine />
+            </div>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-[#1C1917] sm:text-3xl">
+              Ringkasan Guru Pengampu
+            </h1>
+            <p className="text-xs text-[#796E72] sm:text-sm">
+              Kelola rombongan belajar, distribusi materi, pemeriksaan tugas, dan rekapitulasi penilaian.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <Link
+              href="/dashboard/guru/tugas"
+              className="inline-flex items-center gap-2 rounded-xl bg-mulberry-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-mulberry-800"
+            >
+              <span>Koreksi Tugas</span>
+              <ChevronRight size={16} />
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2">
+      {/* Main Feature Cards Grid */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {menu.map((item) => {
-          const card = (
-            <div className="flex items-start gap-4 rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm transition hover:border-[#4b7899]/30 hover:shadow-md h-full">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4b7899]/10 text-lg">
-                {item.icon}
-              </span>
-              <div>
-                <h2 className="font-bold text-[#1d3345] mb-1">{item.title}</h2>
-                <p className="text-sm text-[#1d3345]/55">{item.desc}</p>
-                {!item.href && (
-                  <span className="inline-block mt-2 text-xs font-medium text-[#3d6687] bg-[#4b7899]/10 rounded-full px-2 py-0.5">
-                    Segera hadir
-                  </span>
-                )}
-              </div>
-            </div>
-          );
+          const Icon = item.icon;
+          return (
+            <Link key={item.title} href={item.href} className="group block h-full">
+              <div className="flex h-full flex-col justify-between rounded-2xl border border-[#E8E2E4] bg-white p-5 shadow-xs transition hover:border-mulberry-300 hover:shadow-sm">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FCE7EB] text-mulberry-700 transition group-hover:bg-mulberry-700 group-hover:text-white">
+                      <Icon size={20} />
+                    </span>
+                    <span className="font-mono text-[10px] font-bold text-mulberry-800 bg-[#FFE4E6] px-2 py-0.5 rounded-full border border-[#FECDD3]">
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-base text-[#1C1917] mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#796E72] leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
 
-          return item.href ? (
-            <Link key={item.title} href={item.href}>
-              {card}
+                <div className="mt-4 pt-3 border-t border-[#F5F1F2] flex items-center justify-between text-xs font-semibold text-mulberry-700 group-hover:text-mulberry-800">
+                  <span>Kelola Menu</span>
+                  <ChevronRight size={14} className="transition transform group-hover:translate-x-1" />
+                </div>
+              </div>
             </Link>
-          ) : (
-            <div key={item.title}>{card}</div>
           );
         })}
       </section>
+
     </main>
   );
 }

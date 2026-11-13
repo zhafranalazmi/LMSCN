@@ -1,11 +1,16 @@
 import type { Config } from "tailwindcss";
 
-const burgundyPalette = {
-  100: "#F1E7E4",
-  300: "#D2A9A3",
-  500: "#A84F58",
-  700: "#8E3B46",
-  900: "#642A34",
+const mulberryPalette = {
+  50: "#FAF3F5",
+  100: "#F5E6E9",
+  200: "#EDCFD6",
+  300: "#DEAAB7",
+  400: "#CB7B90",
+  500: "#B6516D",
+  600: "#A33756",
+  700: "#9F1239", // Primary Mulberry Wine
+  800: "#881337", // Deep Wine
+  900: "#70142D",
 };
 
 const config: Config = {
@@ -17,13 +22,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        burgundy: burgundyPalette,
-        navy: burgundyPalette,
-        ink: "#292727",
+        mulberry: mulberryPalette,
+        burgundy: mulberryPalette,
+        navy: mulberryPalette,
+        stoneCanvas: "#F5F1F2",
+        stoneCard: "#FFFFFF",
+        stoneBorder: "#E8E2E4",
+        stoneMuted: "#796E72",
+        ink: "#272125",
       },
       fontFamily: {
-        display: ["'Space Grotesk'", "sans-serif"],
-        body: ["'Inter'", "sans-serif"],
+        display: ["'Plus Jakarta Sans'", "'Space Grotesk'", "sans-serif"],
+        body: ["'Plus Jakarta Sans'", "'Inter'", "sans-serif"],
       },
     },
   },

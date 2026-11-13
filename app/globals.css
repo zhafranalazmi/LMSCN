@@ -9,10 +9,10 @@
     font-family: theme("fontFamily.display");
   }
   body {
-    @apply bg-white text-ink;
+    @apply bg-[#F5F1F2] text-ink;
   }
   :focus-visible {
-    outline: 2px solid theme("colors.navy.900");
+    outline: 2px solid theme("colors.mulberry.700");
     outline-offset: 2px;
   }
   :where(

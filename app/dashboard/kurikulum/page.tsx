@@ -1,43 +1,79 @@
 import GreetingLine from "@/components/shared/GreetingLine";
 import Link from "next/link";
+import { ChevronRight, Download, FileSpreadsheet } from "lucide-react";
 
-export default function kurikulumDashboard() {
+export default function KurikulumDashboard() {
   const menu = [
-    { title: "Rekap Nilai", desc: "Tinjau nilai per mata pelajaran", icon: "📊", href: "/dashboard/kurikulum/nilai" },
-    { title: "Unduh Data", desc: "Unduh data siswa dan guru dengan filter", icon: "📥", href: "/dashboard/kurikulum/unduh-data" },
+    {
+      title: "Rekap Nilai",
+      desc: "Tinjau distribusi nilai akademik per rombel kelas atau keseluruhan",
+      icon: FileSpreadsheet,
+      href: "/dashboard/kurikulum/nilai",
+      tag: "Analisis Nilai",
+    },
+    {
+      title: "Unduh Data",
+      desc: "Unduh data rekapitulasi siswa dan guru ke format lembar kerja",
+      icon: Download,
+      href: "/dashboard/kurikulum/unduh-data",
+      tag: "Ekspor Data",
+    },
   ];
 
   return (
-    <main className="min-h-full rounded-[28px] bg-[#f5f6f6] p-4 sm:p-6 lg:p-8">
-      <section className="mb-6 overflow-hidden rounded-[24px] bg-gradient-to-r from-[#3d6687] via-[#4b7899] to-[#5b87a6] px-6 py-7 text-white shadow-lg sm:px-8">
-        <div className="max-w-3xl">
-          <GreetingLine />
-          <span className="mb-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider">
-            PORTAL KURIKULUM
-          </span>
-          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Ringkasan Kurikulum
-          </h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-            Pantau aktivitas guru dan unduh rekap nilai.
-          </p>
+    <main className="min-h-full space-y-6">
+      {/* Header Banner */}
+      <section className="rounded-2xl border border-[#E8E2E4] bg-white p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full border border-[#FECDD3] bg-[#FFE4E6] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mulberry-800">
+                PORTAL KURIKULUM
+              </span>
+              <GreetingLine />
+            </div>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-[#1C1917] sm:text-3xl">
+              Ringkasan Capaian Kurikulum
+            </h1>
+            <p className="text-xs text-[#796E72] sm:text-sm">
+              Analisis capaian kompetensi dasar dan rekapitulasi penilaian hasil belajar siswa.
+            </p>
+          </div>
         </div>
       </section>
 
+      {/* Main Feature Cards */}
       <section className="grid gap-4 sm:grid-cols-2">
-        {menu.map((item) => (
-          <Link key={item.title} href={item.href}>
-            <div className="flex items-start gap-4 rounded-[24px] border border-[#3d6687]/10 bg-white p-5 shadow-sm transition hover:border-[#4b7899]/30 hover:shadow-md h-full">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#4b7899]/10 text-lg">
-                {item.icon}
-              </span>
-              <div>
-                <h2 className="font-bold text-[#1d3345] mb-1">{item.title}</h2>
-                <p className="text-sm text-[#1d3345]/55">{item.desc}</p>
+        {menu.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link key={item.title} href={item.href} className="group block h-full">
+              <div className="flex h-full flex-col justify-between rounded-2xl border border-[#E8E2E4] bg-white p-5 shadow-xs transition hover:border-mulberry-300 hover:shadow-sm">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FCE7EB] text-mulberry-700 transition group-hover:bg-mulberry-700 group-hover:text-white">
+                      <Icon size={20} />
+                    </span>
+                    <span className="font-mono text-[10px] font-bold text-mulberry-800 bg-[#FFE4E6] px-2 py-0.5 rounded-full border border-[#FECDD3]">
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-base text-[#1C1917] mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#796E72] leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-[#F5F1F2] flex items-center justify-between text-xs font-semibold text-mulberry-700 group-hover:text-mulberry-800">
+                  <span>Buka Menu</span>
+                  <ChevronRight size={14} className="transition transform group-hover:translate-x-1" />
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </section>
     </main>
   );

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import ExcelJS from "exceljs";
-import mongoose from "mongoose";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Asesmen from "@/models/Asesmen";
@@ -12,7 +11,7 @@ import Guru from "@/models/Guru";
 import Kelas from "@/models/Kelas";
 import Siswa from "@/models/Siswa";
 
-const FILTERS = ["semua", "kelas", "jurusan", "tingkat", "mapel", "siswa", "guru"];
+const FILTERS = ["semua", "kelas"];
 
 export const runtime = "nodejs";
 
@@ -30,40 +29,11 @@ export async function GET(req: Request) {
   if (!FILTERS.includes(filter) || (filter !== "semua" && !nilaiFilter)) {
     return NextResponse.json({ message: "Pilihan filter tidak valid" }, { status: 400 });
   }
-  if ((filter === "siswa" || filter === "guru") && !mongoose.isValidObjectId(nilaiFilter)) {
-    return NextResponse.json({ message: "Pilihan data tidak valid" }, { status: 400 });
-  }
-
   await connectDB();
 
-  let kelasTerpilih: string[] | undefined;
-  let siswaTerpilih: mongoose.Types.ObjectId[] | undefined;
-  if (filter === "kelas") {
-    kelasTerpilih = [nilaiFilter];
-    siswaTerpilih = await Siswa.find({ kelas: nilaiFilter }).distinct("_id");
-  } else if (filter === "jurusan") {
-    const [kelasMaster, siswaJurusan] = await Promise.all([
-      Kelas.find({ jurusan: nilaiFilter }).select("nama").lean(),
-      Siswa.find({ jurusan: nilaiFilter }).select("kelas").lean(),
-    ]);
-    kelasTerpilih = [...new Set([...kelasMaster.map((item) => item.nama), ...siswaJurusan.map((item) => item.kelas)])];
-    siswaTerpilih = await Siswa.find({ jurusan: nilaiFilter }).distinct("_id");
-  } else if (filter === "tingkat") {
-    const kelasMaster = await Kelas.find({ tingkat: nilaiFilter }).select("nama").lean();
-    kelasTerpilih = kelasMaster.map((item) => item.nama);
-    siswaTerpilih = kelasTerpilih.length
-      ? await Siswa.find({ kelas: { $in: kelasTerpilih } }).distinct("_id")
-      : [];
-  } else if (filter === "siswa") {
-    siswaTerpilih = [new mongoose.Types.ObjectId(nilaiFilter)];
-  }
-
-  const aktivitasQuery: Record<string, unknown> = {};
-  if (filter === "kelas" || filter === "jurusan" || filter === "tingkat") {
-    aktivitasQuery.kelas = { $in: kelasTerpilih ?? [] };
-  }
-  if (filter === "mapel") aktivitasQuery.mapel = nilaiFilter;
-  if (filter === "guru") aktivitasQuery.guru = nilaiFilter;
+  const aktivitasQuery: Record<string, unknown> = filter === "kelas"
+    ? { kelas: nilaiFilter }
+    : {};
 
   const [asesmenList, tugasList] = await Promise.all([
     Asesmen.find(aktivitasQuery).select("judul mapel kelas guru").lean(),
@@ -71,10 +41,9 @@ export async function GET(req: Request) {
   ]);
   const asesmenIds = asesmenList.map((item) => item._id);
   const tugasIds = tugasList.map((item) => item._id);
-  const filterSiswa = siswaTerpilih ? { siswa: { $in: siswaTerpilih } } : {};
   const [jawabanList, pengumpulanList] = await Promise.all([
-    JawabanSiswa.find({ asesmen: { $in: asesmenIds }, ...filterSiswa }).populate("siswa", "name email jurusan kelas"),
-    PengumpulanTugas.find({ tugas: { $in: tugasIds }, ...filterSiswa }).populate("siswa", "name email jurusan kelas"),
+    JawabanSiswa.find({ asesmen: { $in: asesmenIds } }).populate("siswa", "name email jurusan kelas"),
+    PengumpulanTugas.find({ tugas: { $in: tugasIds } }).populate("siswa", "name email jurusan kelas"),
   ]);
 
   const aktivitasById = new Map<string, { judul: string; mapel: string; kelas: string; guru: string }>();

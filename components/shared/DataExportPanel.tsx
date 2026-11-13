@@ -4,25 +4,15 @@ import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 
 type Entitas = "siswa" | "guru";
-type Filter = "semua" | "kelas" | "jurusan" | "tingkat" | "mapel" | "siswa" | "guru";
+type Filter = "semua" | "kelas";
 
 interface ExportOptions {
-  siswa: { id: string; nama: string; kelas: string }[];
-  guru: { id: string; nama: string }[];
   kelas: string[];
-  jurusan: string[];
-  tingkat: string[];
-  mapel: string[];
 }
 
 const FILTER_LABELS: Record<Filter, string> = {
   semua: "Keseluruhan",
   kelas: "Per kelas",
-  jurusan: "Per jurusan",
-  tingkat: "Per tingkat",
-  mapel: "Per mata pelajaran",
-  siswa: "Per siswa",
-  guru: "Per guru",
 };
 
 export default function DataExportPanel({ roleLabel }: { roleLabel: string }) {
@@ -44,18 +34,11 @@ export default function DataExportPanel({ roleLabel }: { roleLabel: string }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const filters: Filter[] = entitas === "siswa"
-    ? ["semua", "kelas", "jurusan", "siswa", "tingkat", "mapel"]
-    : ["semua", "kelas", "jurusan", "guru", "tingkat", "mapel"];
+  const filters: Filter[] = ["semua", "kelas"];
 
   let values: { value: string; label: string }[] = [];
   if (options) {
     if (filter === "kelas") values = options.kelas.map((item) => ({ value: item, label: item }));
-    if (filter === "jurusan") values = options.jurusan.map((item) => ({ value: item, label: item }));
-    if (filter === "tingkat") values = options.tingkat.map((item) => ({ value: item, label: item }));
-    if (filter === "mapel") values = options.mapel.map((item) => ({ value: item, label: item }));
-    if (filter === "siswa") values = options.siswa.map((item) => ({ value: item.id, label: `${item.nama} (${item.kelas})` }));
-    if (filter === "guru") values = options.guru.map((item) => ({ value: item.id, label: item.nama }));
   }
 
   async function download() {
@@ -90,7 +73,7 @@ export default function DataExportPanel({ roleLabel }: { roleLabel: string }) {
         </span>
         <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Unduh Data</h1>
         <p className="mt-2 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
-          Ekspor data siswa atau guru ke file Excel sesuai pilihan filter.
+          Ekspor data siswa atau guru ke file Excel untuk satu kelas atau keseluruhan.
         </p>
       </section>
 

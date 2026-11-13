@@ -10,7 +10,6 @@ import ThemeToggle from "@/components/shared/ThemeToggle";
 export type MobileNavItem = {
   label: string;
   href: string;
-  /** Tidak dipakai lagi di mobile, dibiarkan supaya layout lama tetap kompatibel */
   short?: string;
   icon?: React.ElementType;
 };
@@ -46,7 +45,7 @@ export default function MobileNav({
     setOpen(false);
   }, [pathname]);
 
-  // Esc menutup, scroll body dikunci, fokus pindah ke tombol tutup lalu kembali
+  // Esc menutup, scroll body dikunci
   useEffect(() => {
     if (!open) return;
     const opener = openRef.current;
@@ -92,9 +91,9 @@ export default function MobileNav({
 
   return (
     <>
-      {/* Header melayang: tombol menu, judul halaman, avatar */}
-      <div className="mnav-fade sticky top-0 z-30 bg-gradient-to-b from-navy-100 via-navy-100/85 to-transparent px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden">
-        <header className="flex items-center gap-3 rounded-[28px] border border-navy-700/10 bg-white p-2.5 pr-3 shadow-sm dark:border-white/10">
+      {/* Header melayang mobile */}
+      <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden">
+        <header className="flex items-center gap-3 rounded-2xl border border-[#E8E2E4] bg-white p-2.5 pr-3 shadow-xs">
           <button
             ref={openRef}
             type="button"
@@ -102,16 +101,16 @@ export default function MobileNav({
             aria-label="Buka menu"
             aria-haspopup="dialog"
             aria-expanded={open}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-100/70 text-navy-700 transition-colors hover:bg-navy-100 active:bg-navy-100 dark:bg-white/10 dark:hover:bg-white/15 dark:active:bg-white/20"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5E6E9] text-mulberry-800 transition hover:bg-[#EDCFD6]"
           >
             <Menu size={20} aria-hidden="true" />
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[11px] font-semibold uppercase tracking-[0.18em] text-navy-500">
+            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-mulberry-700">
               Portal {roleLabel}
             </p>
-            <p className="truncate font-display text-lg font-bold leading-tight text-ink">
+            <p className="truncate font-display text-base font-bold leading-tight text-[#1C1917]">
               {title}
             </p>
           </div>
@@ -120,11 +119,11 @@ export default function MobileNav({
         </header>
       </div>
 
-      {/* Drawer menu (gaya sidebar desktop) */}
+      {/* Drawer menu mobile */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div
-            className="sheet-backdrop absolute inset-0 bg-ink/50"
+            className="sheet-backdrop absolute inset-0 bg-black/30 backdrop-blur-xs"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
@@ -133,17 +132,17 @@ export default function MobileNav({
             role="dialog"
             aria-modal="true"
             aria-label="Menu navigasi"
-            className="drawer-panel absolute inset-y-0 left-0 flex w-[84%] max-w-xs flex-col rounded-r-[28px] bg-navy-700 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-white shadow-2xl"
+            className="drawer-panel absolute inset-y-0 left-0 flex w-[82%] max-w-xs flex-col border-r border-[#E8E2E4] bg-[#FAF7F8] pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-[#272125] shadow-xl"
           >
-            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-500 font-display text-sm font-bold">
+            <div className="flex items-center gap-3 border-b border-[#E8E2E4] px-5 py-5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-sm font-bold text-white shadow-xs">
                 CN
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold leading-tight">
+                <p className="truncate text-sm font-bold leading-tight text-[#1C1917]">
                   SMK Citra Negara
                 </p>
-                <p className="truncate text-xs text-white/50">
+                <p className="truncate text-xs text-[#796E72]">
                   Portal Pembelajaran
                 </p>
               </div>
@@ -152,7 +151,7 @@ export default function MobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Tutup menu"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white/20 active:bg-white/25"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] text-mulberry-800 transition hover:bg-[#EDCFD6]"
               >
                 <X size={18} aria-hidden="true" />
               </button>
@@ -161,16 +160,16 @@ export default function MobileNav({
             <div className="flex items-center gap-2.5 px-5 pb-1 pt-4">
               <span
                 aria-hidden="true"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-navy-500 text-[11px] font-semibold"
+                className="flex h-7 w-7 items-center justify-center rounded-lg bg-mulberry-700 font-mono text-[11px] font-bold text-white shadow-xs"
               >
                 {initials}
               </span>
-              <p className="text-[11px] font-medium uppercase tracking-wide text-white/50">
+              <p className="text-xs font-bold uppercase tracking-wider text-mulberry-800">
                 {roleLabel}
               </p>
             </div>
 
-            <nav className="mt-1 flex-1 space-y-1 overflow-y-auto px-3">
+            <nav className="mt-2 flex-1 space-y-1 overflow-y-auto px-3">
               {menu.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
@@ -179,31 +178,31 @@ export default function MobileNav({
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    className={`flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${
                       active
-                        ? "bg-navy-500 text-white"
-                        : "text-white/70 active:bg-white/5"
+                        ? "border border-[#FECDD3] bg-white text-mulberry-800 shadow-xs"
+                        : "text-[#57534E] active:bg-[#F5E6E9]"
                     }`}
                   >
-                    {Icon && <Icon size={18} aria-hidden="true" />}
+                    {Icon && <Icon size={18} className={active ? "text-mulberry-700" : "text-[#796E72]"} aria-hidden="true" />}
                     {item.label}
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="px-3 pb-2">
+            <div className="px-3 pb-2 pt-2 border-t border-[#E8E2E4]">
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: LOGOUT_HREF })}
-                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 active:bg-white/15"
+                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#796E72] transition hover:bg-[#FCE7EB] hover:text-mulberry-800"
               >
                 <LogOut size={18} aria-hidden="true" />
                 Keluar
               </button>
             </div>
 
-            <div className="border-t border-white/10 px-5 py-4 text-[11px] text-white/40">
+            <div className="border-t border-[#E8E2E4] px-5 py-3 text-[11px] text-[#A8A29E]">
               SMK Citra Negara · 2026
             </div>
           </aside>
