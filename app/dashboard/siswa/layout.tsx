@@ -1,12 +1,13 @@
 "use client";
 
-import { BookOpen, ClipboardCheck, ClipboardList, LayoutDashboard } from "lucide-react";
+import { BookOpen, ClipboardCheck, ClipboardList, LayoutDashboard, UserRound } from "lucide-react";
 import DashboardShell from "@/components/shared/DashboardShell";
 const NAV_ITEMS = [
   { label: "Ringkasan", href: "/dashboard/siswa", icon: LayoutDashboard },
   { label: "Tugas", href: "/dashboard/siswa/tugas", icon: ClipboardList },
   { label: "Materi", href: "/dashboard/siswa/materi", short: "Materi", icon: BookOpen },
   { label: "Asesmen", href: "/dashboard/siswa/asesmen", icon: ClipboardCheck },
+  { label: "Profil", href: "/dashboard/siswa/profil", icon: UserRound },
   { label: "Log Out", href: "/login" },
 ];
 

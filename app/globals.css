@@ -178,16 +178,16 @@
    Kalau menambah warna baru di halaman, tambahkan padanannya di bawah.
    ========================================================================== */
 html.dark { color-scheme: dark; }
-.dark body { background-color: #181316; color: rgb(242,232,229); }
-.dark .dash { background-color: #181316; color: rgb(242,232,229); }
+.dark body { background-color: #1A1417; color: #F5EAEB; }
+.dark .dash { background-color: #1A1417; color: #F5EAEB; }
 @media (max-width: 767px) {
-  .dark .dash { background-image: linear-gradient(to bottom, #2b1d21, #181316); }
+  .dark .dash { background-image: none; background-color: #1A1417; }
 }
 .dark .dash .mnav-fade {
-  background-image: linear-gradient(to bottom, #2b1d21, rgba(43, 29, 33, 0.85), transparent);
+  background-image: linear-gradient(to bottom, #21191D, rgba(33,25,29,0.85), transparent);
 }
-.dark .dash ::placeholder { color: rgba(242,232,229, 0.55); }
-.dark .dash .sheet-backdrop { background-color: rgba(4, 10, 16, 0.65); }
+.dark .dash ::placeholder { color: rgba(245,234,235,0.4); }
+.dark .dash .sheet-backdrop { background-color: rgba(10,5,7,0.65); }
 .dark .dash main > section[class*="bg-gradient-to-r"] {
   border-color: rgba(225, 196, 190, 0.18) !important;
   background-color: #2b2023 !important;
@@ -338,6 +338,82 @@ html.dark { color-scheme: dark; }
   --tw-gradient-stops: var(--tw-gradient-from), #8e3b46 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }
 .dark .dash [class*="to-[#5b87a6]"] { --tw-gradient-to: #642a34 !important; }
+
+/* ==========================================================================
+   Dark Mode - Mulberry Wine & Stone palette
+   Covers new arbitrary-hex classes used in rewritten dashboard page files.
+   Light tokens -> Dark replacements (Warm Wine Dark palette).
+   ========================================================================== */
+
+/* Page/canvas background */
+.dark .dash .bg-\[\#F5F1F2\] { background-color: #1A1417 !important; }
+.dark .dash .bg-\[\#FAF7F8\] { background-color: #21191D !important; }
+.dark .dash .bg-\[\#FCFBF9\] { background-color: #1E161A !important; }
+
+/* Card/surface whites */
+.dark .dash .bg-white { background-color: #2C1E24 !important; }
+.dark .dash input.bg-white,
+.dark .dash select.bg-white,
+.dark .dash textarea.bg-white { background-color: #2C1E24 !important; }
+
+/* Rose/blush tint backgrounds */
+.dark .dash .bg-\[\#FFE4E6\] { background-color: #3B1E28 !important; }
+.dark .dash .bg-\[\#FECDD3\] { background-color: #3B1E28 !important; }
+.dark .dash .bg-\[\#FCE7EB\] { background-color: #3B1E28 !important; }
+.dark .dash .bg-\[\#FFF5F7\] { background-color: #2C1E24 !important; }
+.dark .dash .bg-\[\#FFF7ED\] { background-color: #2C1E24 !important; }
+
+/* Text: near-black → near-white */
+.dark .dash .text-\[\#1C1917\] { color: #FDF5F6 !important; }
+.dark .dash .text-\[\#272125\] { color: #F5EAEB !important; }
+.dark .dash .text-\[\#292524\] { color: #F5EAEB !important; }
+.dark .dash .text-\[\#44403C\] { color: #E8D8DC !important; }
+.dark .dash .text-\[\#57534E\] { color: #D4C4C8 !important; }
+.dark .dash .text-\[\#796E72\] { color: #C5B6B9 !important; }
+.dark .dash .text-\[\#78716C\] { color: #C5B6B9 !important; }
+.dark .dash .text-\[\#A8A29E\] { color: #8C7C81 !important; }
+
+/* Mulberry accent text → soft rose-pink in dark */
+.dark .dash .text-mulberry-700 { color: #FFAEC0 !important; }
+.dark .dash .text-mulberry-800 { color: #FFAEC0 !important; }
+.dark .dash .hover\:text-mulberry-800:hover { color: #FFC8D4 !important; }
+
+/* Mulberry accent backgrounds (buttons stay same hue, slightly darker) */
+.dark .dash .bg-mulberry-700 { background-color: #7F0E2E !important; }
+.dark .dash .bg-mulberry-800 { background-color: #6A0A26 !important; }
+.dark .dash .hover\:bg-mulberry-700:hover { background-color: #7F0E2E !important; }
+.dark .dash .hover\:bg-mulberry-800:hover { background-color: #6A0A26 !important; }
+
+/* Borders */
+.dark .dash .border-\[\#E8E2E4\] { border-color: #38272E !important; }
+.dark .dash .border-\[\#DDD7CD\] { border-color: #38272E !important; }
+.dark .dash .border-\[\#F5F1F2\] { border-color: #38272E !important; }
+.dark .dash .border-\[\#FECDD3\] { border-color: #5C2B3C !important; }
+.dark .dash .border-mulberry-300 { border-color: #5C2B3C !important; }
+.dark .dash .hover\:border-mulberry-300:hover { border-color: #7F0E2E !important; }
+.dark .dash .hover\:border-\[\#FECDD3\]:hover { border-color: #5C2B3C !important; }
+.dark .dash .hover\:bg-white:hover { background-color: #38272E !important; }
+
+/* Status / utility */
+.dark .dash .bg-red-50 { background-color: rgba(239,68,68,.12) !important; }
+.dark .dash .text-rose-800 { color: #FFAEC0 !important; }
+.dark .dash .border-rose-200 { border-color: rgba(253,164,175,.35) !important; }
+.dark .dash .text-\[\#B45309\] { color: #FCD34D !important; }
+.dark .dash .text-emerald-700 { color: #6EE7B7 !important; }
+
+/* class*= wildcard overrides for new palette (catches opacity variants) */
+.dark .dash [class*="bg-[#F5F1F2]"] { background-color: #1A1417 !important; }
+.dark .dash [class*="bg-[#FAF7F8]"] { background-color: #21191D !important; }
+.dark .dash [class*="bg-[#FFE4E6]"] { background-color: #3B1E28 !important; }
+.dark .dash [class*="bg-[#FECDD3]"] { background-color: #3B1E28 !important; }
+.dark .dash [class*="bg-[#FCE7EB]"] { background-color: #3B1E28 !important; }
+.dark .dash [class*="bg-[#FFF5F7]"] { background-color: #2C1E24 !important; }
+.dark .dash [class*="text-[#1C1917]"] { color: #FDF5F6 !important; }
+.dark .dash [class*="text-[#796E72]"] { color: #C5B6B9 !important; }
+.dark .dash [class*="text-[#57534E]"] { color: #D4C4C8 !important; }
+.dark .dash [class*="border-[#E8E2E4]"] { border-color: #38272E !important; }
+.dark .dash [class*="border-[#FECDD3]"] { border-color: #5C2B3C !important; }
+.dark .dash [class*="border-[#F5F1F2]"] { border-color: #38272E !important; }
 
 a[href],
 button:not(:disabled),

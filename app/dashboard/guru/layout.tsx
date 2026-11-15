@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ClipboardCheck, ClipboardList, FileSpreadsheet, LayoutDashboard, School } from "lucide-react";
+import { BookOpen, ClipboardCheck, ClipboardList, FileSpreadsheet, LayoutDashboard, School, UserRound } from "lucide-react";
 import DashboardShell from "@/components/shared/DashboardShell";
 
 const NAV_ITEMS = [
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "Materi", href: "/dashboard/guru/materi", short: "Materi", icon: BookOpen },
   { label: "Asesmen", href: "/dashboard/guru/asesmen", icon: ClipboardCheck },
   { label: "Rekap Nilai", href: "/dashboard/guru/nilai", icon: FileSpreadsheet },
+  { label: "Profil", href: "/dashboard/guru/profil", icon: UserRound },
   { label: "Log Out", href: "/login" },
 ];
 export default function GuruLayout({

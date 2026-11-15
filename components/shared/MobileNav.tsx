@@ -92,8 +92,8 @@ export default function MobileNav({
   return (
     <>
       {/* Header melayang mobile */}
-      <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden">
-        <header className="flex items-center gap-3 rounded-2xl border border-[#E8E2E4] bg-white p-2.5 pr-3 shadow-xs">
+      <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 dark:bg-[#1A1417]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden transition-colors">
+        <header className="flex items-center gap-3 rounded-2xl border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] p-2.5 pr-3 shadow-xs">
           <button
             ref={openRef}
             type="button"
@@ -101,16 +101,16 @@ export default function MobileNav({
             aria-label="Buka menu"
             aria-haspopup="dialog"
             aria-expanded={open}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5E6E9] text-mulberry-800 transition hover:bg-[#EDCFD6]"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6] dark:hover:bg-[#4E2433]"
           >
             <Menu size={20} aria-hidden="true" />
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-mulberry-700">
+            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-mulberry-700 dark:text-[#FFAEC0]">
               Portal {roleLabel}
             </p>
-            <p className="truncate font-display text-base font-bold leading-tight text-[#1C1917]">
+            <p className="truncate font-display text-base font-bold leading-tight text-[#1C1917] dark:text-[#FDF5F6]">
               {title}
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function MobileNav({
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div
-            className="sheet-backdrop absolute inset-0 bg-black/30 backdrop-blur-xs"
+            className="sheet-backdrop absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
@@ -132,17 +132,17 @@ export default function MobileNav({
             role="dialog"
             aria-modal="true"
             aria-label="Menu navigasi"
-            className="drawer-panel absolute inset-y-0 left-0 flex w-[82%] max-w-xs flex-col border-r border-[#E8E2E4] bg-[#FAF7F8] pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-[#272125] shadow-xl"
+            className="drawer-panel absolute inset-y-0 left-0 flex w-[82%] max-w-xs flex-col border-r border-[#E8E2E4] dark:border-[#38272E] bg-[#FAF7F8] dark:bg-[#21191D] pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-[#272125] dark:text-[#F5EAEB] shadow-xl"
           >
-            <div className="flex items-center gap-3 border-b border-[#E8E2E4] px-5 py-5">
+            <div className="flex items-center gap-3 border-b border-[#E8E2E4] dark:border-[#38272E] px-5 py-5">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-sm font-bold text-white shadow-xs">
                 CN
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold leading-tight text-[#1C1917]">
+                <p className="truncate text-sm font-bold leading-tight text-[#1C1917] dark:text-[#FDF5F6]">
                   SMK Citra Negara
                 </p>
-                <p className="truncate text-xs text-[#796E72]">
+                <p className="truncate text-xs text-[#796E72] dark:text-[#C5B6B9]">
                   Portal Pembelajaran
                 </p>
               </div>
@@ -151,7 +151,7 @@ export default function MobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Tutup menu"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] text-mulberry-800 transition hover:bg-[#EDCFD6]"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6]"
               >
                 <X size={18} aria-hidden="true" />
               </button>
@@ -164,7 +164,7 @@ export default function MobileNav({
               >
                 {initials}
               </span>
-              <p className="text-xs font-bold uppercase tracking-wider text-mulberry-800">
+              <p className="text-xs font-bold uppercase tracking-wider text-mulberry-800 dark:text-[#FFAEC0]">
                 {roleLabel}
               </p>
             </div>
@@ -180,29 +180,35 @@ export default function MobileNav({
                     aria-current={active ? "page" : undefined}
                     className={`flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${
                       active
-                        ? "border border-[#FECDD3] bg-white text-mulberry-800 shadow-xs"
-                        : "text-[#57534E] active:bg-[#F5E6E9]"
+                        ? "border border-[#FECDD3] dark:border-[#5C2B3C] bg-white dark:bg-[#2C1E24] text-mulberry-800 dark:text-[#FFAEC0] shadow-xs"
+                        : "text-[#57534E] dark:text-[#C5B6B9] active:bg-[#F5E6E9] dark:active:bg-[#3B1E28]"
                     }`}
                   >
-                    {Icon && <Icon size={18} className={active ? "text-mulberry-700" : "text-[#796E72]"} aria-hidden="true" />}
+                    {Icon && (
+                      <Icon
+                        size={18}
+                        className={active ? "text-mulberry-700 dark:text-[#FFAEC0]" : "text-[#796E72] dark:text-[#A8989C]"}
+                        aria-hidden="true"
+                      />
+                    )}
                     {item.label}
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="px-3 pb-2 pt-2 border-t border-[#E8E2E4]">
+            <div className="px-3 pb-2 pt-2 border-t border-[#E8E2E4] dark:border-[#38272E]">
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: LOGOUT_HREF })}
-                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#796E72] transition hover:bg-[#FCE7EB] hover:text-mulberry-800"
+                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#796E72] dark:text-[#C5B6B9] transition hover:bg-[#FCE7EB] dark:hover:bg-[#3B1E28] hover:text-mulberry-800 dark:hover:text-[#FFAEC0]"
               >
                 <LogOut size={18} aria-hidden="true" />
                 Keluar
               </button>
             </div>
 
-            <div className="border-t border-[#E8E2E4] px-5 py-3 text-[11px] text-[#A8A29E]">
+            <div className="border-t border-[#E8E2E4] dark:border-[#38272E] px-5 py-3 text-[11px] text-[#A8A29E] dark:text-[#8C7C81]">
               SMK Citra Negara · 2026
             </div>
           </aside>

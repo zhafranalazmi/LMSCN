@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, GraduationCap, LayoutDashboard, School, ShieldCheck, Users } from "lucide-react";
+import { BookOpen, GraduationCap, LayoutDashboard, School, ShieldCheck, UserRound, Users } from "lucide-react";
 import DashboardShell from "@/components/shared/DashboardShell";
 
 const NAV_ITEMS = [
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "Manajemen Guru", href: "/dashboard/admin/guru", icon: GraduationCap },
   { label: "Mata Pelajaran", href: "/dashboard/admin/mapel", icon: BookOpen },
   { label: "Akun Pengelola", href: "/dashboard/admin/akun", icon: ShieldCheck },
+  { label: "Profil", href: "/dashboard/admin/profil", icon: UserRound },
   { label: "Logout", href: "/login" },
 
 ];

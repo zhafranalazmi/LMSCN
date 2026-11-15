@@ -1,12 +1,13 @@
 "use client";
 
-import { Download, FileSpreadsheet, LayoutDashboard } from "lucide-react";
+import { Download, FileSpreadsheet, LayoutDashboard, UserRound } from "lucide-react";
 import DashboardShell from "@/components/shared/DashboardShell";
 
 const NAV_ITEMS = [
   { label: "Ringkasan", href: "/dashboard/kurikulum", icon: LayoutDashboard },
   { label: "Unduh Data", href: "/dashboard/kurikulum/unduh-data", short: "Unduh", icon: Download },
   { label: "Rekap Nilai", href: "/dashboard/kurikulum/nilai", short: "Nilai", icon: FileSpreadsheet },
+  { label: "Profil", href: "/dashboard/kurikulum/profil", icon: UserRound },
     { label: "Log Out", href: "/login" },
 ];
 
