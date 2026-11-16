@@ -167,7 +167,7 @@ export default function ProfilePage() {
               </svg>
             </div>
 
-            <div className="-mt-11 mb-4 flex items-end px-3">
+            <div className="relative z-10 mt-4 mb-4 flex items-end px-3 md:-mt-11">
               <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-4 border-white bg-[#DFE5E7] shadow-md dark:border-[#21191D] dark:bg-[#38272E]">
                 <ProfileAvatarPlaceholder />
               </div>
