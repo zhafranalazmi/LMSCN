@@ -20,7 +20,7 @@ export default function DashboardShell({
   initials: string;
 }) {
   const pathname = usePathname() ?? "";
-  const rootHref = items.find((item) => item.label === "Ringkasan")?.href;
+  const rootHref = items.find((item) => item.label === "Ringkasan")?.href ?? items[0]?.href;
   const navigationItems = items.filter((item) => item.href !== "/login");
   const isActive = (href: string) =>
     href === rootHref ? pathname === href : pathname.startsWith(href);
@@ -46,7 +46,8 @@ export default function DashboardShell({
           </span>
         </div>
 
-        <nav aria-label={`Navigasi ${roleLabel}`} className="mt-2 flex-1 space-y-1 overflow-y-auto px-3">
+        {/* Navigation Items (with matching elevated circular active badge mechanism) */}
+        <nav aria-label={`Navigasi ${roleLabel}`} className="mt-2 flex-1 space-y-1.5 overflow-y-auto px-3">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
@@ -55,20 +56,39 @@ export default function DashboardShell({
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition ${
+                className={`group relative flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-semibold transition-all duration-200 ${
                   active
-                    ? "border border-[#FECDD3] dark:border-[#5C2B3C] bg-white dark:bg-[#2C1E24] text-mulberry-800 dark:text-[#FFAEC0] shadow-xs"
-                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-[#F5E6E9] dark:hover:bg-[#2C1E24] hover:text-[#1C1917] dark:hover:text-[#FFF0F3]"
+                    ? "border border-[#FECDD3] dark:border-[#5C2B3C] bg-white dark:bg-[#2C1E24] text-[#1C1917] dark:text-[#FDF5F6] shadow-xs translate-x-1"
+                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-[#F5E6E9]/60 dark:hover:bg-[#2C1E24]/60 hover:text-[#1C1917] dark:hover:text-[#FFF0F3]"
                 }`}
               >
-                {Icon && (
-                  <Icon
-                    size={17}
-                    className={active ? "text-mulberry-700 dark:text-[#FFAEC0]" : "text-[#796E72] dark:text-[#A8989C]"}
+                {/* Elevated circular badge matching the mobile active mechanism */}
+                <div
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
+                    active
+                      ? "border-2 border-mulberry-700 dark:border-[#FFAEC0] bg-[#FFF5F7] dark:bg-[#3B1E28] text-mulberry-700 dark:text-[#FFAEC0] shadow-xs scale-105"
+                      : "text-[#796E72] dark:text-[#A8989C] group-hover:bg-[#FCE7EB] dark:group-hover:bg-[#3B1E28] group-hover:text-mulberry-700"
+                  }`}
+                >
+                  {Icon && <Icon size={16} aria-hidden="true" />}
+                </div>
+
+                <span
+                  className={`truncate transition-colors ${
+                    active
+                      ? "font-bold text-mulberry-800 dark:text-[#FFAEC0]"
+                      : "font-medium"
+                  }`}
+                >
+                  {item.label}
+                </span>
+
+                {active && (
+                  <span
+                    className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-mulberry-700 dark:bg-[#FFAEC0]"
                     aria-hidden="true"
                   />
                 )}
-                {item.label}
               </Link>
             );
           })}
@@ -106,9 +126,11 @@ export default function DashboardShell({
         </div>
       </header>
 
+      {/* Mobile Top Header + Mobile Bottom Navigation Bar */}
       <MobileNav items={items} roleLabel={roleLabel} initials={initials} />
 
-      <div className="px-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-3 md:ml-64 md:px-6 md:pb-8 md:pt-20">
+      {/* Content wrapper with safe bottom padding for Mobile Navigation Bar */}
+      <div className="px-3 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-3 md:ml-64 md:px-6 md:pb-8 md:pt-20">
         {children}
       </div>
     </div>
