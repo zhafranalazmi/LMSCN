@@ -36,9 +36,6 @@ export default function MobileNav({
   const isActive = (href: string) =>
     href === rootHref ? pathname === href : pathname.startsWith(href);
 
-  const current = menu.find((i) => isActive(i.href)) ?? menu[0];
-  const title = current?.href === rootHref ? "Ringkasan" : current?.label;
-
   // Tutup drawer setiap navigasi pindah
   useEffect(() => {
     setOpen(false);
@@ -108,98 +105,96 @@ export default function MobileNav({
 
   return (
     <>
-      {/* Header atas mobile */}
+      {/* Header atas mobile (Ringkas, rapi, dan tidak memakan banyak tempat) */}
       <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 dark:bg-[#1A1417]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden transition-colors">
-        <header className="flex items-center gap-3 rounded-2xl border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] p-2.5 pr-3 shadow-xs">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-mulberry-700 font-display text-xs font-bold text-white shadow-xs">
-            CN
+        <header className="flex items-center justify-between rounded-2xl border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] px-3.5 py-2.5 shadow-2xs">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-xs font-bold text-white shadow-xs">
+              CN
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-bold text-[#1C1917] dark:text-[#FDF5F6]">
+                SMK Citra Negara
+              </p>
+              <p className="truncate text-[10px] text-[#796E72] dark:text-[#C5B6B9]">
+                Portal {roleLabel}
+              </p>
+            </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-mulberry-700 dark:text-[#FFAEC0]">
-              Portal {roleLabel}
-            </p>
-            <p className="truncate font-display text-sm font-bold leading-tight text-[#1C1917] dark:text-[#FDF5F6]">
-              {title}
-            </p>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              ref={openRef}
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Buka menu lengkap"
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6]"
+            >
+              <Menu size={16} aria-hidden="true" />
+            </button>
           </div>
-
-          <ThemeToggle />
-
-          {/* Tombol buka drawer / opsi akun */}
-          <button
-            ref={openRef}
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Buka menu lengkap"
-            aria-haspopup="dialog"
-            aria-expanded={open}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6] dark:hover:bg-[#4E2433]"
-          >
-            <Menu size={18} aria-hidden="true" />
-          </button>
         </header>
       </div>
 
       {/* ====================================================================
           MOBILE NAVIGATION BAR (Fixed at bottom with curved pop-up active notch)
+          - Label semua tab sejajar rata di baseline horizontal yang sama
+          - Tab aktif mengangkat ikon dalam lingkaran timbul Mulberry
+          - Bebas bug layout di semua ukuran layar mobile
           ==================================================================== */}
       <nav
         aria-label="Navigasi bawah mobile"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] pb-[env(safe-area-inset-bottom)] md:hidden shadow-[0_-4px_24px_rgba(39,33,37,0.08)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] transition-colors duration-150"
       >
-        <div className="relative flex h-16 w-full max-w-lg items-center justify-around mx-auto px-1">
+        <div className="relative flex h-16 w-full max-w-md items-center justify-around mx-auto px-1">
           {bottomBarTabs.map((tab) => {
             const Icon = tab.icon;
             const isTrigger = "isMenuTrigger" in tab && tab.isMenuTrigger;
             const active = isTrigger ? isMenuTriggerActive || open : isActive(tab.href);
             const displayLabel = tab.short ?? tab.label;
 
-            const content = (
-              <>
+            const tabContent = (
+              <div className="relative flex h-full w-full flex-col items-center justify-end pb-2">
                 {active ? (
                   <>
-                    {/* Upward wave/notch curve background */}
-                    <div className="absolute -top-[23px] left-1/2 -translate-x-1/2 w-24 h-[24px] pointer-events-none">
+                    {/* Lekukan kurva lembut di belakang lingkaran aktif */}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-16 h-4 pointer-events-none overflow-visible">
                       <svg
-                        viewBox="0 0 100 32"
+                        viewBox="0 0 64 16"
                         className="w-full h-full fill-white dark:fill-[#21191D]"
                         preserveAspectRatio="none"
                       >
-                        <path d="M 0 32 C 18 32 26 2 50 2 C 74 2 82 32 100 32 Z" />
-                        <path
-                          d="M 0 32 C 18 32 26 2 50 2 C 74 2 82 32 100 32"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          className="text-[#E8E2E4] dark:text-[#38272E]"
-                        />
+                        <path d="M 0 16 C 12 16 16 0 32 0 C 48 0 52 16 64 16 Z" />
                       </svg>
                     </div>
 
-                    {/* Elevated circular active bubble */}
-                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex h-[50px] w-[50px] items-center justify-center rounded-full border-[3px] border-mulberry-700 dark:border-[#FFAEC0] bg-[#FFF5F7] dark:bg-[#2C1E24] text-mulberry-700 dark:text-[#FFAEC0] shadow-md transition-transform duration-200">
-                      {Icon && <Icon size={22} aria-hidden="true" />}
+                    {/* Gelembung Lingkaran Timbul Aktif (Floating Circular Bubble) */}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-mulberry-700 dark:border-[#FFAEC0] bg-[#FFF5F7] dark:bg-[#2C1E24] text-mulberry-700 dark:text-[#FFAEC0] shadow-md transition-all duration-200">
+                      {Icon && <Icon size={20} aria-hidden="true" />}
                     </div>
 
-                    {/* Active label (bold & colored) */}
-                    <span className="mt-6 text-[10px] sm:text-[11px] font-bold text-[#1C1917] dark:text-[#FDF5F6] tracking-tight truncate max-w-[64px]">
+                    {/* Label Aktif (Tebal & Berwarna Mulberry, baseline sejajar rata) */}
+                    <span className="text-[10px] font-bold text-mulberry-800 dark:text-[#FFAEC0] tracking-tight truncate max-w-[60px] leading-tight">
                       {displayLabel}
                     </span>
                   </>
                 ) : (
                   <>
-                    {/* Inactive icon */}
-                    <div className="flex h-6 w-6 items-center justify-center text-[#796E72] dark:text-[#A8989C]">
-                      {Icon && <Icon size={20} aria-hidden="true" />}
+                    {/* Ikon Tab Tidak Aktif */}
+                    <div className="mb-1 flex h-6 w-6 items-center justify-center text-[#796E72] dark:text-[#A8989C] transition-colors">
+                      {Icon && <Icon size={19} aria-hidden="true" />}
                     </div>
-                    {/* Inactive label */}
-                    <span className="mt-1 text-[10px] sm:text-[11px] font-medium text-[#796E72] dark:text-[#A8989C] tracking-tight truncate max-w-[64px]">
+
+                    {/* Label Tab Tidak Aktif (Baseline sejajar rata dengan tab aktif) */}
+                    <span className="text-[10px] font-medium text-[#796E72] dark:text-[#A8989C] tracking-tight truncate max-w-[60px] leading-tight">
                       {displayLabel}
                     </span>
                   </>
                 )}
-              </>
+              </div>
             );
 
             if (isTrigger) {
@@ -209,9 +204,9 @@ export default function MobileNav({
                   type="button"
                   onClick={() => setOpen(true)}
                   aria-label="Buka menu lengkap"
-                  className="relative flex flex-1 flex-col items-center justify-center h-full pt-1 pb-1 text-center select-none"
+                  className="relative flex flex-1 h-full items-center justify-center select-none"
                 >
-                  {content}
+                  {tabContent}
                 </button>
               );
             }
@@ -221,9 +216,9 @@ export default function MobileNav({
                 key={tab.href}
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className="relative flex flex-1 flex-col items-center justify-center h-full pt-1 pb-1 text-center select-none"
+                className="relative flex flex-1 h-full items-center justify-center select-none"
               >
-                {content}
+                {tabContent}
               </Link>
             );
           })}

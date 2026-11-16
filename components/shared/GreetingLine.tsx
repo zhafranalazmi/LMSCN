@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays } from "lucide-react";
 
 const TZ = "Asia/Jakarta";
 
@@ -12,9 +11,9 @@ function greetingFor(hour: number) {
   return "Selamat Malam";
 }
 
-/** Sapaan + tanggal di dalam kartu hero. Hanya tampil di mobile. */
+/** Sapaan ramah di samping badge portal untuk tampilan mobile */
 export default function GreetingLine() {
-  const [info, setInfo] = useState<{ greet: string; date: string } | null>(null);
+  const [greet, setGreet] = useState<string>("");
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -26,13 +25,7 @@ export default function GreetingLine() {
         timeZone: TZ,
       }).format(now)
     );
-    const date = new Intl.DateTimeFormat("id-ID", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      timeZone: TZ,
-    }).format(now);
-    setInfo({ greet: greetingFor(hour), date });
+    setGreet(greetingFor(hour));
 
     let alive = true;
     fetch("/api/auth/session")
@@ -47,20 +40,11 @@ export default function GreetingLine() {
     };
   }, []);
 
+  if (!greet) return null;
+
   return (
-    <div className="mb-4 min-h-[2.75rem] md:hidden">
-      {info && (
-        <>
-          <p className="text-[15px] font-semibold leading-tight">
-            {info.greet}
-            {name ? `, ${name}!` : "!"}
-          </p>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-white/70">
-            <CalendarDays size={14} />
-            {info.date}
-          </p>
-        </>
-      )}
-    </div>
+    <span className="truncate text-xs font-medium text-[#796E72] dark:text-[#C5B6B9] md:hidden">
+      • {greet}{name ? `, ${name}` : ""}
+    </span>
   );
 }
