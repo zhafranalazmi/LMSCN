@@ -10,7 +10,7 @@ export async function PUT(
   { params }: { params: { id: string; pengumpulanId: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "guru") {
+  if (!session || !["superadmin", "guru"].includes((session.user as any).role)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

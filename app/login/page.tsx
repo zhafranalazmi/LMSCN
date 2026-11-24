@@ -36,7 +36,7 @@ export default function LoginPage() {
       const session = await sessionRes.json();
       const role = session?.user?.role;
       if (
-        !["admin", "guru", "siswa", "kepsek", "kurikulum"].includes(role)
+        !["superadmin", "admin", "guru", "siswa", "kepsek", "kurikulum"].includes(role)
       ) {
         throw new Error("Peran akun tidak ditemukan");
       }

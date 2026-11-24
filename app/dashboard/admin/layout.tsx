@@ -1,7 +1,7 @@
-"use client";
-
 import { BookOpen, GraduationCap, LayoutDashboard, School, ShieldCheck, UserRound, Users } from "lucide-react";
 import DashboardShell from "@/components/shared/DashboardShell";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { label: "Ringkasan", href: "/dashboard/admin", icon: LayoutDashboard },
@@ -15,13 +15,26 @@ const NAV_ITEMS = [
 
 ];
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  const roleLabel = (session?.user as any)?.role === "superadmin" ? "Super Admin" : "Admin";
+  const initials = roleLabel === "Super Admin" ? "SA" : "AD";
+  const items = roleLabel === "Super Admin"
+    ? [
+        ...NAV_ITEMS,
+        { label: "Dashboard Guru", href: "/dashboard/guru", icon: GraduationCap },
+        { label: "Dashboard Siswa", href: "/dashboard/siswa", icon: Users },
+        { label: "Dashboard Kepsek", href: "/dashboard/kepsek", icon: School },
+        { label: "Dashboard Kurikulum", href: "/dashboard/kurikulum", icon: BookOpen },
+      ]
+    : NAV_ITEMS;
+
   return (
-    <DashboardShell items={NAV_ITEMS} roleLabel="Admin" initials="AD">
+    <DashboardShell items={items} roleLabel={roleLabel} initials={initials}>
       {children}
     </DashboardShell>
   );

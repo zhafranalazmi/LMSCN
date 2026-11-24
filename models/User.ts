@@ -1,6 +1,6 @@
 import mongoose, { Schema, models, model } from "mongoose";
 
-export const ROLES = ["admin", "guru", "kepsek", "kurikulum", "siswa"] as const;
+export const ROLES = ["superadmin", "admin", "guru", "kepsek", "kurikulum", "siswa"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const JURUSAN = ["PPLG", "MPLB", "PM", "TJKT", "DV", "Perhotelan"] as const;

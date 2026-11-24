@@ -6,7 +6,7 @@ import Kelas from "@/models/Kelas";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "admin") {
+  if (!session || !["superadmin", "admin"].includes((session.user as any).role)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "admin") {
+  if (!session || !["superadmin", "admin"].includes((session.user as any).role)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

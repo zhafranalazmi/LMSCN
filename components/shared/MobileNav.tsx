@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LogOut, Menu, X } from "lucide-react";
+import PortalSwitcher from "@/components/shared/PortalSwitcher";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 
 export type MobileNavItem = {
@@ -109,7 +110,7 @@ export default function MobileNav({
       <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 dark:bg-[#1A1417]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden transition-colors">
         <header className="flex items-center justify-between rounded-2xl border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] px-3.5 py-2.5 shadow-2xs">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-xs font-bold text-white shadow-xs">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] font-display text-xs font-bold text-white shadow-xs">
               CN
             </div>
             <div className="min-w-0">
@@ -131,7 +132,7 @@ export default function MobileNav({
               aria-label="Buka menu lengkap"
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6]"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F1F2] dark:bg-[#2C1E24] text-[#272125] dark:text-[#F5EAEB] transition hover:bg-[#E8E2E4]"
             >
               <Menu size={16} aria-hidden="true" />
             </button>
@@ -172,12 +173,12 @@ export default function MobileNav({
                     </div>
 
                     {/* Gelembung Lingkaran Timbul Aktif (Floating Circular Bubble) */}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-mulberry-700 dark:border-[#FFAEC0] bg-[#FFF5F7] dark:bg-[#2C1E24] text-mulberry-700 dark:text-[#FFAEC0] shadow-md transition-all duration-200">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-2 border-mulberry-600/80 dark:border-[#FFAEC0]/80 bg-white dark:bg-[#2C1E24] text-mulberry-700 dark:text-[#FFAEC0] shadow-md transition-all duration-200">
                       {Icon && <Icon size={20} aria-hidden="true" />}
                     </div>
 
-                    {/* Label Aktif (Tebal & Berwarna Mulberry, baseline sejajar rata) */}
-                    <span className="text-[10px] font-bold text-mulberry-800 dark:text-[#FFAEC0] tracking-tight truncate max-w-[60px] leading-tight">
+                    {/* Label Aktif (Tebal & Netral, baseline sejajar rata) */}
+                    <span className="text-[10px] font-bold text-[#1C1917] dark:text-[#FDF5F6] tracking-tight truncate max-w-[60px] leading-tight">
                       {displayLabel}
                     </span>
                   </>
@@ -241,7 +242,7 @@ export default function MobileNav({
             className="drawer-panel absolute inset-y-0 left-0 flex w-[82%] max-w-xs flex-col border-r border-[#E8E2E4] dark:border-[#38272E] bg-[#FAF7F8] dark:bg-[#21191D] pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[env(safe-area-inset-top)] text-[#272125] dark:text-[#F5EAEB] shadow-xl"
           >
             <div className="flex items-center gap-3 border-b border-[#E8E2E4] dark:border-[#38272E] px-5 py-5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-sm font-bold text-white shadow-xs">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] font-display text-sm font-bold text-white shadow-xs">
                 CN
               </div>
               <div className="min-w-0 flex-1">
@@ -257,7 +258,7 @@ export default function MobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Tutup menu"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5E6E9] dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-[#EDCFD6]"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5F1F2] dark:bg-[#2C1E24] text-[#272125] dark:text-[#F5EAEB] transition hover:bg-[#E8E2E4]"
               >
                 <X size={18} aria-hidden="true" />
               </button>
@@ -266,14 +267,16 @@ export default function MobileNav({
             <div className="flex items-center gap-2.5 px-5 pb-1 pt-4">
               <span
                 aria-hidden="true"
-                className="flex h-7 w-7 items-center justify-center rounded-lg bg-mulberry-700 font-mono text-[11px] font-bold text-white shadow-xs"
+                className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] font-mono text-[11px] font-bold text-white shadow-xs"
               >
                 {initials}
               </span>
-              <p className="text-xs font-bold uppercase tracking-wider text-mulberry-800 dark:text-[#FFAEC0]">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#272125] dark:text-[#F5EAEB]">
                 {roleLabel}
               </p>
             </div>
+
+            <PortalSwitcher compact />
 
             <nav className="mt-2 flex-1 space-y-1 overflow-y-auto px-3">
               {menu.map((item) => {

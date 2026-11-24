@@ -15,6 +15,10 @@ export default withAuth(
     const { pathname } = req.nextUrl;
     const role = req.nextauth.token?.role as string | undefined;
 
+    if (role === "superadmin") {
+      return NextResponse.next();
+    }
+
     const matchedPrefix = Object.keys(ROLE_PATH_MAP).find((prefix) =>
       pathname.startsWith(prefix)
     );

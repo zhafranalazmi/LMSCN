@@ -18,7 +18,7 @@ export const runtime = "nodejs";
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
-  if (!session || (role !== "kepsek" && role !== "kurikulum")) {
+  if (!session || (role !== "superadmin" && role !== "kepsek" && role !== "kurikulum")) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

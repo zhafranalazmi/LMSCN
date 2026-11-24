@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BookOpen, GraduationCap, School, Shield, Users } from "lucide-react";
 
 type Stats = {
+  superadmin: number;
   admin: number;
   guru: number;
   siswa: number;
@@ -52,6 +53,7 @@ export default function AdminDashboard() {
   }, [attempt]);
 
   const cards = [
+    { label: "Super Admin", value: stats?.superadmin, icon: Shield },
     { label: "Admin", value: stats?.admin, icon: Shield },
     { label: "Guru", value: stats?.guru, icon: Users },
     { label: "Siswa", value: stats?.siswa, icon: GraduationCap },

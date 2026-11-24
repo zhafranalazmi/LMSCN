@@ -7,7 +7,7 @@ import JawabanSiswa from "@/models/JawabanSiswa";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "siswa") {
+  if (!session || !["superadmin", "siswa"].includes((session.user as any).role)) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 

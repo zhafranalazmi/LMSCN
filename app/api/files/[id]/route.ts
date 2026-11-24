@@ -29,7 +29,7 @@ async function checkFileAccess(userId: string, role: string, fileUrl: string) {
     return { exists: false, allowed: false };
   }
 
-  if (role === "admin") {
+  if (role === "superadmin" || role === "admin") {
     return { exists: true, allowed: true };
   }
 
@@ -117,7 +117,8 @@ export async function GET(
     typeof uploadedBy === "string" &&
     uploadedBy === session.user.id &&
     uploadedRole === session.user.role;
-  if (access.exists ? !access.allowed : session.user.role !== "admin" && !isUploader) {
+  const sessionRole = (session.user as any).role as string | undefined;
+  if (access.exists ? !access.allowed : sessionRole !== "superadmin" && sessionRole !== "admin" && !isUploader) {
     return NextResponse.json({ message: "Akses ditolak" }, { status: 403 });
   }
 

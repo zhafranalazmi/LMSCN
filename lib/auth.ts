@@ -7,12 +7,14 @@ import Guru from "@/models/Guru";
 import Siswa from "@/models/Siswa";
 import Kepsek from "@/models/Kepsek";
 import Kurikulum from "@/models/Kurikulum";
+import SuperAdmin from "@/models/SuperAdmin";
 
-type Role = "admin" | "guru" | "siswa" | "kepsek" | "kurikulum";
+type Role = "superadmin" | "admin" | "guru" | "siswa" | "kepsek" | "kurikulum";
 
 // Daftar semua model per-role. Login akan cek satu-satu sampai ketemu
 // email yang cocok, jadi gak perlu tau role-nya di awal.
 const ROLE_MODELS: { role: Role; model: any }[] = [
+  { role: "superadmin", model: SuperAdmin },
   { role: "admin", model: Admin },
   { role: "guru", model: Guru },
   { role: "siswa", model: Siswa },
