@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import { useSuperAdmin } from "@/components/shared/SuperAdminContext";
 
-type Role = "kepsek" | "kurikulum";
+type Role = "kepsek" | "kurikulum" | "admins";
 
 interface Akun {
   _id: string;
@@ -13,13 +14,16 @@ interface Akun {
 const ROLE_LABEL: Record<Role, string> = {
   kepsek: "Kepala Sekolah",
   kurikulum: "Kurikulum",
+  admins: "Admin",
 };
 
 export default function AkunPage() {
+  const isSuperAdmin = useSuperAdmin();
   const [activeRole, setActiveRole] = useState<Role>("kepsek");
 
   const [kepsekList, setKepsekList] = useState<Akun[]>([]);
   const [kurikulumList, setKurikulumList] = useState<Akun[]>([]);
+  const [adminsList, setAdminsList] = useState<Akun[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [name, setName] = useState("");
@@ -37,22 +41,33 @@ export default function AkunPage() {
 
   async function loadData() {
     setLoading(true);
-    const [kepsekRes, kurikulumRes] = await Promise.all([
+    const requests = [
       fetch("/api/admin/kepsek"),
       fetch("/api/admin/kurikulum"),
-    ]);
+      ...(isSuperAdmin ? [fetch("/api/admin/admins")] : []),
+    ];
+    const [kepsekRes, kurikulumRes, adminsRes] = await Promise.all(requests);
     const kepsekData = await kepsekRes.json();
     const kurikulumData = await kurikulumRes.json();
     setKepsekList(Array.isArray(kepsekData) ? kepsekData : []);
     setKurikulumList(Array.isArray(kurikulumData) ? kurikulumData : []);
+    if (adminsRes) {
+      const adminsData = await adminsRes.json();
+      setAdminsList(Array.isArray(adminsData) ? adminsData : []);
+    }
     setLoading(false);
   }
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [isSuperAdmin]);
 
-  const currentList = activeRole === "kepsek" ? kepsekList : kurikulumList;
+  const currentList =
+    activeRole === "kepsek"
+      ? kepsekList
+      : activeRole === "kurikulum"
+        ? kurikulumList
+        : adminsList;
 
   function resetForm() {
     setName("");
@@ -144,8 +159,8 @@ export default function AkunPage() {
       </section>
 
       {/* Tab pilih role */}
-      <div className="mb-6 flex gap-2">
-        {(["kepsek", "kurikulum"] as Role[]).map((role) => (
+      <div className="mb-6 flex flex-wrap gap-2">
+        {(isSuperAdmin ? (["kepsek", "kurikulum", "admins"] as Role[]) : (["kepsek", "kurikulum"] as Role[])).map((role) => (
           <button
             key={role}
             onClick={() => {
