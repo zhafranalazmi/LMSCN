@@ -34,19 +34,19 @@ export default function DashboardShell({
     <div className="dash min-h-screen bg-[#F5F1F2] dark:bg-[#1A1417] text-[#272125] dark:text-[#F5EAEB] transition-colors duration-150">
       {/* Desktop Sidebar: Soft Stone in Light, Warm Charcoal in Dark */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[#E8E2E4] dark:border-[#38272E] bg-[#FAF7F8] dark:bg-[#21191D] md:flex transition-colors duration-150">
-        <div className="flex items-center gap-3 border-b border-[#E8E2E4] dark:border-[#38272E] px-5 py-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] font-display text-sm font-bold text-white shadow-xs">
+        <div className="flex items-center gap-3 border-b border-[#EDCFD6] dark:border-[#38272E] px-5 py-5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-mulberry-700 font-display text-sm font-bold text-white shadow-xs">
             CN
           </div>
           <div>
-            <p className="text-sm font-bold leading-tight text-[#1C1917] dark:text-[#FDF5F6]">SMK Citra Negara</p>
+            <p className="text-sm font-bold leading-tight text-mulberry-900 dark:text-[#FDF5F6]">SMK Citra Negara</p>
             <p className="text-xs text-[#796E72] dark:text-[#C5B6B9]">Portal Pembelajaran</p>
           </div>
         </div>
 
         <div className="px-5 pb-1 pt-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#2A2024] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#272125] dark:text-[#F5EAEB]">
-            <span className="h-1.5 w-1.5 rounded-full bg-mulberry-600 dark:bg-rose-400" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-mulberry-200 dark:border-[#5C2B3C] bg-mulberry-50 dark:bg-[#3B1E28] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-mulberry-800 dark:text-[#FFAEC0]">
+            <span className="h-1.5 w-1.5 rounded-full bg-mulberry-700 dark:bg-rose-400" />
             {displayRole}
           </span>
         </div>
@@ -65,16 +65,16 @@ export default function DashboardShell({
                 aria-current={active ? "page" : undefined}
                 className={`group relative flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-semibold transition-all duration-200 ${
                   active
-                    ? "border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#2C1E24] text-[#1C1917] dark:text-[#FDF5F6] shadow-xs translate-x-1"
-                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-white/70 dark:hover:bg-[#2C1E24]/60 hover:text-[#1C1917] dark:hover:text-[#FFF0F3]"
+                    ? "border border-mulberry-200 dark:border-[#5C2B3C] bg-mulberry-700 dark:bg-[#2C1E24] text-white dark:text-[#FDF5F6] shadow-xs translate-x-1"
+                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-mulberry-50 dark:hover:bg-[#2C1E24]/60 hover:text-mulberry-800 dark:hover:text-[#FFF0F3]"
                 }`}
               >
                 {/* Elevated circular badge matching the mobile active mechanism */}
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
                     active
-                      ? "border border-mulberry-600/70 dark:border-[#FFAEC0]/70 bg-[#FAF3F5] dark:bg-[#3B1E28] text-mulberry-700 dark:text-[#FFAEC0] shadow-xs scale-105"
-                      : "text-[#796E72] dark:text-[#A8989C] group-hover:bg-[#F5F1F2] dark:group-hover:bg-[#3B1E28] group-hover:text-[#272125]"
+                      ? "border-2 border-white/80 dark:border-[#FFAEC0]/70 bg-mulberry-800 dark:bg-[#3B1E28] text-white dark:text-[#FFAEC0] shadow-xs scale-105"
+                      : "text-[#796E72] dark:text-[#A8989C] group-hover:bg-mulberry-100 dark:group-hover:bg-[#3B1E28] group-hover:text-mulberry-700"
                   }`}
                 >
                   {Icon && <Icon size={16} aria-hidden="true" />}
@@ -83,7 +83,7 @@ export default function DashboardShell({
                 <span
                   className={`truncate transition-colors ${
                     active
-                      ? "font-bold text-[#1C1917] dark:text-[#FDF5F6]"
+                      ? "font-bold text-white dark:text-[#FDF5F6]"
                       : "font-medium"
                   }`}
                 >
@@ -92,7 +92,7 @@ export default function DashboardShell({
 
                 {active && (
                   <span
-                    className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-mulberry-600 dark:bg-[#FFAEC0]"
+                    className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-white dark:bg-[#FFAEC0]"
                     aria-hidden="true"
                   />
                 )}
@@ -122,11 +122,11 @@ export default function DashboardShell({
           Tahun Ajaran 2026/2027 • <span className="font-semibold text-[#1C1917] dark:text-[#FDF5F6]">Semester Ganjil</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-[#1C1917] dark:text-[#FDF5F6]">Portal {displayRole}</span>
+          <span className="text-xs font-bold text-mulberry-900 dark:text-[#FDF5F6]">Portal {displayRole}</span>
           <ThemeToggle />
           <div
             aria-label={`Akun ${displayRole}`}
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] text-xs font-bold font-mono text-white shadow-xs"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-mulberry-700 text-xs font-bold font-mono text-white shadow-xs"
           >
             {displayInitials}
           </div>

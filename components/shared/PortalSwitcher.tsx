@@ -35,8 +35,8 @@ export default function PortalSwitcher({ compact = false }: { compact?: boolean 
                 href={portal.href}
                 className={`rounded-lg px-2 py-1.5 text-center text-[11px] font-semibold transition ${
                   active
-                    ? "bg-[#272125] text-white dark:bg-[#F5EAEB] dark:text-[#1A1417] shadow-2xs"
-                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-[#F5F1F2] dark:hover:bg-[#38272E]"
+                    ? "bg-mulberry-700 text-white dark:bg-[#F5EAEB] dark:text-[#1A1417] shadow-2xs"
+                    : "text-[#57534E] dark:text-[#C5B6B9] hover:bg-mulberry-50 dark:hover:bg-[#38272E] hover:text-mulberry-800"
                 }`}
               >
                 {portal.label}

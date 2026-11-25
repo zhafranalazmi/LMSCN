@@ -9,14 +9,14 @@ export default function GuruDashboard() {
       desc: "Lihat daftar siswa per rombel yang diampu",
       icon: School,
       href: "/dashboard/guru/kelas",
-      tag: "4 Rombel",
+      tag: "Daftar Rombel",
     },
     {
       title: "Tugas",
       desc: "Buat tugas baru dan periksa pengumpulan siswa",
       icon: ClipboardList,
       href: "/dashboard/guru/tugas",
-      tag: "14 Perlu Nilai",
+      tag: "Periksa Tugas",
     },
     {
       title: "Materi",

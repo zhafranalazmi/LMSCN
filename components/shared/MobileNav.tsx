@@ -110,7 +110,7 @@ export default function MobileNav({
       <div className="mnav-fade sticky top-0 z-30 bg-[#F5F1F2]/90 dark:bg-[#1A1417]/90 backdrop-blur-xs px-3 pb-2 pt-[calc(0.75rem+env(safe-area-inset-top))] md:hidden transition-colors">
         <header className="flex items-center justify-between rounded-2xl border border-[#E8E2E4] dark:border-[#38272E] bg-white dark:bg-[#21191D] px-3.5 py-2.5 shadow-2xs">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#272125] dark:bg-[#38272E] font-display text-xs font-bold text-white shadow-xs">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mulberry-700 font-display text-xs font-bold text-white shadow-xs">
               CN
             </div>
             <div className="min-w-0">
@@ -132,7 +132,7 @@ export default function MobileNav({
               aria-label="Buka menu lengkap"
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5F1F2] dark:bg-[#2C1E24] text-[#272125] dark:text-[#F5EAEB] transition hover:bg-[#E8E2E4]"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mulberry-100 dark:bg-[#3B1E28] text-mulberry-800 dark:text-[#FFAEC0] transition hover:bg-mulberry-200"
             >
               <Menu size={16} aria-hidden="true" />
             </button>
@@ -173,12 +173,12 @@ export default function MobileNav({
                     </div>
 
                     {/* Gelembung Lingkaran Timbul Aktif (Floating Circular Bubble) */}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-2 border-mulberry-600/80 dark:border-[#FFAEC0]/80 bg-white dark:bg-[#2C1E24] text-mulberry-700 dark:text-[#FFAEC0] shadow-md transition-all duration-200">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-white dark:border-[#FFAEC0]/80 bg-mulberry-700 dark:bg-[#2C1E24] text-white dark:text-[#FFAEC0] shadow-md transition-all duration-200">
                       {Icon && <Icon size={20} aria-hidden="true" />}
                     </div>
 
-                    {/* Label Aktif (Tebal & Netral, baseline sejajar rata) */}
-                    <span className="text-[10px] font-bold text-[#1C1917] dark:text-[#FDF5F6] tracking-tight truncate max-w-[60px] leading-tight">
+                    {/* Label Aktif (Tebal & Mulberry, baseline sejajar rata) */}
+                    <span className="text-[10px] font-bold text-mulberry-800 dark:text-[#FFAEC0] tracking-tight truncate max-w-[60px] leading-tight">
                       {displayLabel}
                     </span>
                   </>
